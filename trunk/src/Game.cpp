@@ -41,6 +41,11 @@ void Game::action()
 	LOG_INFO("Entering game loop...");
 	while(Irrlicht::getDevice()->run() )
 	{
+		if (Irrlicht::getDevice()->isWindowActive() == false)
+		{
+			Irrlicht::getDevice()->sleep(10, true);
+			continue;
+		}
 		//Update the player
 		m_Player.Update();
 
@@ -66,15 +71,13 @@ void Game::action()
 			}
 		}
 
-		if (Irrlicht::getDevice()->isWindowActive()
-			&& Irrlicht::getDevice()->getVideoDriver() != 0
+		if (Irrlicht::getDevice()->getVideoDriver() != 0
 			&& Irrlicht::getDevice()->getSceneManager() != 0)
 		{
 			Irrlicht::getDevice()->getVideoDriver()->beginScene(true, true, irr::video::SColor(255, 0, 0, 0) );
 			Irrlicht::getDevice()->getSceneManager()->drawAll();
 			Irrlicht::getDevice()->getVideoDriver()->endScene();
 		}
-
 		//Check for all asteroids sunk
 		bool asteroidsleft = false;
 		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
@@ -89,7 +92,6 @@ void Game::action()
 			releaseScene();
 			loadScene();
 		}
-
 	}
 	LOG_INFO("...Exiting game loop");
 

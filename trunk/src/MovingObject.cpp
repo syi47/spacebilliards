@@ -43,7 +43,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 	if (!m_SceneNode->isVisible() || !other->getSceneNode()->isVisible() )
 		return false;
 
-	/*********************************************************************************************************/
+	/*********************************************************************************************************
 	//Inter-penetrating collision detection code & Hacked response code
 	using irr::core::vector3df;
 	float bothradii = this->getRadius() + other->getRadius();
@@ -77,7 +77,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 	/*********************************************************************************************************/
 
 
-	/*********************************************************************************************************
+	/*********************************************************************************************************/
 	//Collision detection code based on "Pool Hall Lessons" by Joe van den Heuvel and Miles Jackson [18.1.02]
 	//http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
 
@@ -141,6 +141,30 @@ bool MovingObject::testForCollision(MovingObject* other)
 	if (distance < 0.0f)
 	{
 		//the objects have already interpenetrated
+
+		//Here be Dragons - use hacked collision detection code
+
+		//Objects are overlapping
+		float magnitude = 0.0f;
+
+		if (m_MoveAnimator && other->getAnimator() )
+		{
+			vector3df newvelocity(this->getAnimator()->getVelocity() );
+			newvelocity.invert();
+			newvelocity += other->getAnimator()->getVelocity();
+			magnitude = 0.5f*newvelocity.getLength();
+		}
+
+		//separate magnitude in the direction of the collision
+		vector3df collisionvector(C);
+		float multiplier = magnitude / collisionvector.getLength();
+		collisionvector *= multiplier;
+
+		other->collide(this, collisionvector);
+		other->m_LastCollider = this;
+		this->collide(other, -collisionvector);
+		this->m_LastCollider = other;
+		return true;
 	}
 
 	//get the magnitude of the movement vector
@@ -181,7 +205,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 	//this->m_LastCollider = other;
 	//other->collide(this, norm);
 	//other->m_LastCollider = this;
-	*********************************************************************************************************/
+	/*********************************************************************************************************/
 
 	return true;
 }
