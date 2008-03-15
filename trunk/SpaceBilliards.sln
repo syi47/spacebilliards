@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsteroidsDemo", "AsteroidsDemo.vcproj", "{949DCB0A-A92D-48E5-A4B9-8B736C05ACAB}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Space Billiards", "AsteroidsDemo.vcproj", "{949DCB0A-A92D-48E5-A4B9-8B736C05ACAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
