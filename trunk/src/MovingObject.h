@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ObjectTypes.h"
-#include "SIrrlicht.h"
+#include "Engine.h"
 #include "PointMassAnimator.h"
 
 

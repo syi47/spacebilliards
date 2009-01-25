@@ -1,8 +1,23 @@
 #include "GameWorld.h"
 
-GameWorld::GameWorld(float yextent, float density)
-: m_BBox(-1.33f*yextent, -yextent, -100.0f, 1.33f*yextent, yextent, 100.0f)
+GameWorld::GameWorld(const float density)
+: m_BBox(0, 0, -100.0f, 0, 0, 100.0f)
 {
+#ifdef _DEBUG
+	irr::core::dimension2di size(800, 600);
+#else
+	irr::core::dimension2di size(Irrlicht::getDevice()->getVideoDriver()->getCurrentRenderTargetSize() );
+#endif
+
+	float yextent = (static_cast<float>(size.Height) / static_cast<float>(size.Width) ) * 130.0f;
+
+	float xextent =  (static_cast<float>(size.Height) / static_cast<float>(size.Width) ) * (1.33f * 130.0f);
+
+	m_BBox.MaxEdge.X = xextent;
+	m_BBox.MaxEdge.Y = yextent;
+	m_BBox.MinEdge.X = -xextent;
+	m_BBox.MinEdge.Y = -yextent;
+
 	m_Density = density;
 }
 

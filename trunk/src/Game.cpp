@@ -10,7 +10,6 @@ typedef std::vector<MovingObject*>::iterator Object_it;
 
 
 Game::Game(void)
-: m_PlayArea(130, 0.03f)
 {
 	//Initialise FMOD
 	LOG_INFO("Initialising FMOD");
@@ -46,13 +45,14 @@ void Game::action()
 			Irrlicht::getDevice()->sleep(10, true);
 			continue;
 		}
+
 		//Update the player
 		m_Player.Update();
 
 		//Let the game world affect each object within it
 		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
 		{
-			m_PlayArea.actOn(*object);
+			m_PlayArea->actOn(*object);
 		}
 
 		checkCollisions();
@@ -78,6 +78,7 @@ void Game::action()
 			Irrlicht::getDevice()->getSceneManager()->drawAll();
 			Irrlicht::getDevice()->getVideoDriver()->endScene();
 		}
+
 		//Check for all asteroids sunk
 		bool asteroidsleft = false;
 		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
@@ -89,8 +90,7 @@ void Game::action()
 		}
 		if (!asteroidsleft)
 		{
-			releaseScene();
-			loadScene();
+			onGameOver();
 		}
 	}
 	LOG_INFO("...Exiting game loop");
@@ -127,6 +127,11 @@ void Game::checkCollisions()
 
 void Game::loadScene()
 {
+
+	//Create the gameworld
+	m_PlayArea = new GameWorld(0.03f);
+
+
 	ObjectFactory factory;
 
 	irr::scene::ISceneManager* scenemgr = Irrlicht::getDevice()->getSceneManager();
@@ -136,20 +141,21 @@ void Game::loadScene()
 	m_Player.loadPlayerObjects();
 	m_Objects.push_back(m_Player.getShipObject() );
 
-	vector3df startpos = m_PlayArea.center();
-	startpos.X += 0.5f*m_PlayArea.right();
+	vector3df startpos = m_PlayArea->center();
+	startpos.X += 0.5f*m_PlayArea->right();
 	m_Player.getShipObject()->getSceneNode()->setPosition(startpos);
 	m_Player.getShipObject()->getSceneNode()->setRotation(vector3df(0, 0, 90) );
 
 
 	//Create some Asteroids
 	float asteroidspacing = 1.3f;
-	startpos = m_PlayArea.center();
-	startpos.X += 0.33f*m_PlayArea.left();
+	startpos = m_PlayArea->center();
+	startpos.X += 0.33f*m_PlayArea->left();
 	for (int i = 0; i < 5; ++i)
 	{
 		for (int j = 0; j < i+1; ++j)
 		{
+			//loops to create the asteroids in a triangle
 			MovingObject* newasteroid = factory.createAsteroid();
 			float spacing = 2.0f*asteroidspacing*newasteroid->getRadius();
 			vector3df placement(startpos);
@@ -164,27 +170,27 @@ void Game::loadScene()
 	//Create the Black Holes
 	//top-left
 	MovingObject* newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea.left(), m_PlayArea.top(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//top-right
 	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea.right(), m_PlayArea.top(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-left
 	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea.left(), m_PlayArea.bottom(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-right
 	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea.right(), m_PlayArea.bottom(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//top-centre
 	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea.top(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-centre
 	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea.bottom(), 0) );
+	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 
 	//Add the camera
@@ -193,7 +199,7 @@ void Game::loadScene()
 	if (camera)
 	{
 		//calculate the distance to move the camera back
-		float cameradistance = m_PlayArea.top()/tanf(camera->getFOV()*0.5f );
+		float cameradistance = m_PlayArea->top()/tanf(camera->getFOV()*0.5f );
 		camera->setPosition(vector3df(0, 0, -1.0f*cameradistance) );
 		camera->setUpVector(vector3df(0, 1, 0) );
 
@@ -232,4 +238,13 @@ void Game::releaseScene()
 	m_Objects.clear();
 
 	Irrlicht::getDevice()->getSceneManager()->clear();
+
+	//release the game world
+	delete (m_PlayArea);
+}
+
+void Game::onGameOver()
+{
+	releaseScene();
+	loadScene();
 }

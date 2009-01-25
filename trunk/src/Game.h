@@ -10,7 +10,7 @@
 #include "Player.h"
 #include "GameWorld.h"
 #include <vector>
-#include "SIrrlicht.h"
+#include "Engine.h"
 
 /**
 \brief Defines actions when the game is playing
@@ -42,6 +42,8 @@ private:
 	Player m_Player;
 
 	///defines the size of the play area
-	GameWorld m_PlayArea;
+	GameWorld* m_PlayArea;
+
+	void onGameOver();
 
 };
