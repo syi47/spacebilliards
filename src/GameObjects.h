@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MovingObject.h"
-#include "SIrrlicht.h"
+#include "Engine.h"
 #include "fmod.h"
 
 class PlayerShip :

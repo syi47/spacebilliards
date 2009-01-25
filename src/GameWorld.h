@@ -1,11 +1,11 @@
 #pragma once
-#include "SIrrlicht.h"
+#include "Engine.h"
 #include "MovingObject.h"
 
 class GameWorld
 {
 public:
-	GameWorld(float yextent, float density);
+	GameWorld(const float density);
 
 	inline float left() {return m_BBox.MinEdge.X;}
 	inline float right() {return m_BBox.MaxEdge.X;}
@@ -24,10 +24,11 @@ protected:
 		RIGHT_SIDE = (1<<1),
 		TOP_SIDE = (1<<2),
 		BOTTOM_SIDE = (1<<3),
-		TOPANDLEFT_SIDE = TOP_SIDE|LEFT_SIDE,
-		TOPANDRIGHT_SIDE = TOP_SIDE|RIGHT_SIDE,
-		BOTTOMANDLEFT_SIDE = BOTTOM_SIDE|LEFT_SIDE,
-		BOTTOMANDRIGHT_SIDE = BOTTOM_SIDE|RIGHT_SIDE,
+		TWO_SIDES = (1<<4),
+		TOPANDLEFT_SIDE = TOP_SIDE|LEFT_SIDE|TWO_SIDES,
+		TOPANDRIGHT_SIDE = TOP_SIDE|RIGHT_SIDE|TWO_SIDES,
+		BOTTOMANDLEFT_SIDE = BOTTOM_SIDE|LEFT_SIDE|TWO_SIDES,
+		BOTTOMANDRIGHT_SIDE = BOTTOM_SIDE|RIGHT_SIDE|TWO_SIDES,
 	};
 
 

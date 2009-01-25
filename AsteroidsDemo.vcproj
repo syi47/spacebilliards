@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Engine.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Game.h"
 				>
 			</File>
@@ -256,10 +260,6 @@
 			</File>
 			<File
 				RelativePath=".\src\PointMassAnimator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\SIrrlicht.h"
 				>
 			</File>
 		</Filter>
