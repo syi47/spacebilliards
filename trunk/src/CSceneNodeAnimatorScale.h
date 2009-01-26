@@ -1,5 +1,8 @@
 #pragma once
+
+#pragma warning(push, 3)
 #include "ISceneNode.h"
+#pragma warning(pop)
 
 
 namespace irr
