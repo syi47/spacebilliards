@@ -32,6 +32,17 @@ public:
 		static Irrlicht device;
 		return device.m_Device;
 	}
+
+	static void drawAll()
+	{
+		if (Irrlicht::getDevice()->getVideoDriver() != 0
+			&& Irrlicht::getDevice()->getSceneManager() != 0)
+		{
+			Irrlicht::getDevice()->getVideoDriver()->beginScene(true, true, irr::video::SColor(255, 0, 0, 0) );
+			Irrlicht::getDevice()->getSceneManager()->drawAll();
+			Irrlicht::getDevice()->getVideoDriver()->endScene();
+		}
+	}
 	
 protected:
 	Irrlicht(void)
@@ -66,6 +77,7 @@ protected:
 		//Delete the irrlicht device
 		m_Device->drop();
 	}
+
 
 	irr::IrrlichtDevice* m_Device;
 };

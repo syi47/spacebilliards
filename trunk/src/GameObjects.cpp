@@ -101,8 +101,38 @@ void PlayerShip::collide(const MovingObject* other, const irr::core::vector3df& 
 
 /********************************************************************************************/
 /*										BlackHole											*/
-/********************************************************************************************/
-void BlackHole::collide(const MovingObject* /*other*/, const irr::core::vector3df& /*collisionvector*/)
+/********************************************************************************************/\
+FSOUND_SAMPLE* BlackHole::m_SuckSound = NULL;
+int BlackHole::m_SuckChannel = -1;
+
+BlackHole::BlackHole(irr::scene::ISceneNode* node)
+: MovingObject(node, 0/*animator*/)
 {
+	//load the sound sample
+	if (m_SuckSound == NULL)
+	{
+		m_SuckSound = FSOUND_Sample_Load(FSOUND_FREE, "invin.wav", FSOUND_NORMAL, 0, 0);
+		if (m_SuckSound != NULL)
+		{
+			LOG_INFO("Black Hole Suck Sound successfully loaded");
+		}
+	}
+}
+
+
+void BlackHole::collide(const MovingObject* other, const irr::core::vector3df& /*collisionvector*/)
+{
+	switch (other->getType() )
+	{
+	case OT_ASTEROID:
+		{
+			//play the suck sound
+			if (!FSOUND_IsPlaying(m_SuckChannel) )
+				m_SuckChannel = FSOUND_PlaySound(FSOUND_FREE, m_SuckSound);
+			return;
+		}
+	}
+
+
 	return;
 }

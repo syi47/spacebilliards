@@ -11,18 +11,35 @@
 #include "GameWorld.h"
 #include <vector>
 #include "Engine.h"
+#include "IAppState.h"
+
 
 /**
 \brief Defines actions when the game is playing
 
 **/
-class Game
+
+
+namespace GameState
+{
+	enum Enum
+	{
+		Loading,
+		Playing,
+		Finished
+	};
+}
+
+namespace appstate
+{
+
+class Game : public IAppState
 {
 public:
 	Game(void);
 	~Game(void);
 
-	void action();
+	virtual void action();
 
 private:
 	void checkCollisions();
@@ -31,9 +48,14 @@ private:
 
 	void releaseScene();
 
+	void loadGame();
+
+	void runGame();
+
+	void exitGame();
+
 private:
-	///What wave the game is in i.e. difficulty
-	int m_Wave;
+	GameState::Enum m_GameState;
 
 	///list of Asteroids in the game
 	std::vector<MovingObject*> m_Objects;
@@ -41,9 +63,11 @@ private:
 	///the Player
 	Player m_Player;
 
-	///defines the size of the play area
+	///defines the play area
 	GameWorld* m_PlayArea;
 
-	void onGameOver();
 
 };
+
+
+}//namespace appstate
