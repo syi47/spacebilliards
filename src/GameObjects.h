@@ -20,12 +20,15 @@ class BlackHole : public MovingObject
 {
 public:
 	///Constructor
-	BlackHole(irr::scene::ISceneNode* node/*, irr::scene::PointMassAnimator* animator*/)
-		: MovingObject(node, 0/*animator*/){}
+	BlackHole(irr::scene::ISceneNode* node/*, irr::scene::PointMassAnimator* animator*/);
 
 	const ObjectType getType() const {return OT_BLACKHOLE;}
 
 	void collide(const MovingObject* other, const irr::core::vector3df& collisionvector);
+
+protected:
+	static FSOUND_SAMPLE* m_SuckSound;
+	static int m_SuckChannel;
 };
 
 class Asteroid : public MovingObject

@@ -8,8 +8,12 @@
 
 typedef std::vector<MovingObject*>::iterator Object_it;
 
+namespace appstate
+{
+
 
 Game::Game(void)
+: m_GameState(GameState::Loading)
 {
 	//Initialise FMOD
 	LOG_INFO("Initialising FMOD");
@@ -22,87 +26,22 @@ Game::~Game(void)
 
 void Game::action()
 {
-	//Set the window caption
-	Irrlicht::getDevice()->setWindowCaption(L"Asteroids Demo");
-
-	//Point irrlicht at the data folder for resources
-	Irrlicht::getDevice()->getFileSystem()->changeWorkingDirectoryTo("data");
-
-	//seed rand() with current time
-	srand(Irrlicht::getDevice()->getTimer()->getRealTime() );
-
-	//Set the player object as the device's EventReceiver
-	Irrlicht::getDevice()->setEventReceiver(&m_Player);
-
-	loadScene();
-
-	//run the game
-	LOG_INFO("Entering game loop...");
-	while(Irrlicht::getDevice()->run() )
+	while (m_GameState != GameState::Finished)
 	{
-		if (Irrlicht::getDevice()->isWindowActive() == false)
+		switch (m_GameState)
 		{
-			Irrlicht::getDevice()->sleep(10, true);
-			continue;
-		}
+		case (GameState::Loading):
+			loadGame();
+			break;
 
-		//Update the player
-		m_Player.Update();
-
-		//Let the game world affect each object within it
-		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
-		{
-			m_PlayArea->actOn(*object);
-		}
-
-		checkCollisions();
-
-		//check the objects for deletion
-		Object_it object_i = m_Objects.begin();
-		while (object_i != m_Objects.end() )
-		{
-			Object_it object = object_i++;
-
-			if ( (*object)->getSceneNode() == 0 )
-			{
-				//object has been cleaned up and is awaiting deletion
-				delete (*object);
-				object_i = m_Objects.erase(object);
-			}
-		}
-
-		if (Irrlicht::getDevice()->getVideoDriver() != 0
-			&& Irrlicht::getDevice()->getSceneManager() != 0)
-		{
-			Irrlicht::getDevice()->getVideoDriver()->beginScene(true, true, irr::video::SColor(255, 0, 0, 0) );
-			Irrlicht::getDevice()->getSceneManager()->drawAll();
-			Irrlicht::getDevice()->getVideoDriver()->endScene();
-		}
-
-		//Check for all asteroids sunk
-		bool asteroidsleft = false;
-		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
-		{
-			if ( (*object)->getType() == OT_ASTEROID)
-			{
-				asteroidsleft = true;
-			}
-		}
-		if (!asteroidsleft)
-		{
-			onGameOver();
+		case (GameState::Playing):
+			runGame();
+			break;
 		}
 	}
-	LOG_INFO("...Exiting game loop");
 
-	releaseScene();
+	exitGame();
 
-	//Remove the player as the Event Receiver before deletion
-	Irrlicht::getDevice()->setEventReceiver(0);
-
-	//Clean up FMOD
-	LOG_INFO("Closing FMOD");
-	FSOUND_Close();
 }
 
 void Game::checkCollisions()
@@ -243,8 +182,97 @@ void Game::releaseScene()
 	delete (m_PlayArea);
 }
 
-void Game::onGameOver()
+
+void Game::loadGame()
 {
-	releaseScene();
+	//Set the window caption
+	Irrlicht::getDevice()->setWindowCaption(L"Asteroids Demo");
+
+	//Point irrlicht at the data folder for resources
+	Irrlicht::getDevice()->getFileSystem()->changeWorkingDirectoryTo("data");
+
+	//seed rand() with current time
+	srand(Irrlicht::getDevice()->getTimer()->getRealTime() );
+
+	//Set the player object as the device's EventReceiver
+	Irrlicht::getDevice()->setEventReceiver(&m_Player);
+
 	loadScene();
+
+	m_GameState = GameState::Playing;
 }
+
+void Game::runGame()
+{
+	//run the game
+	LOG_INFO("Entering game loop...");
+	while(Irrlicht::getDevice()->run() )
+	{
+		if (Irrlicht::getDevice()->isWindowActive() == false)
+		{
+			Irrlicht::getDevice()->sleep(10, true);
+			continue;
+		}
+
+		//Update the player
+		m_Player.Update();
+
+		//Let the game world affect each object within it
+		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+		{
+			m_PlayArea->actOn(*object);
+		}
+
+		checkCollisions();
+
+		//check the objects for deletion
+		Object_it object_i = m_Objects.begin();
+		while (object_i != m_Objects.end() )
+		{
+			Object_it object = object_i++;
+
+			if ( (*object)->getSceneNode() == 0 )
+			{
+				//object has been cleaned up and is awaiting deletion
+				delete (*object);
+				object_i = m_Objects.erase(object);
+			}
+		}
+
+		Irrlicht::drawAll();
+
+		//Check for all asteroids sunk
+		bool asteroidsleft = false;
+		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+		{
+			if ( (*object)->getType() == OT_ASTEROID)
+			{
+				asteroidsleft = true;
+			}
+		}
+		if (!asteroidsleft)
+		{
+			m_GameState = GameState::Finished;
+			releaseScene();
+			loadScene();
+		}
+	}
+	LOG_INFO("...Exiting game loop");
+}
+
+void Game::exitGame()
+{
+	//clean up here
+
+
+	releaseScene();
+
+	//Remove the player as the Event Receiver before deletion
+	Irrlicht::getDevice()->setEventReceiver(0);
+
+	//Clean up FMOD
+	LOG_INFO("Closing FMOD");
+	FSOUND_Close();
+}
+
+}//namespace appstate

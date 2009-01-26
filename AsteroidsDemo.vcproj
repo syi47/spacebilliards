@@ -48,7 +48,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -181,6 +181,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\AppStateHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\CSceneNodeAnimatorScale.cpp"
 				>
 			</File>
@@ -198,6 +202,10 @@
 			</File>
 			<File
 				RelativePath=".\src\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Menu.cpp"
 				>
 			</File>
 			<File
@@ -223,6 +231,14 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\_enums.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\AppStateHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\CSceneNodeAnimatorScale.h"
 				>
 			</File>
@@ -240,6 +256,14 @@
 			</File>
 			<File
 				RelativePath=".\src\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\IAppState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Menu.h"
 				>
 			</File>
 			<File

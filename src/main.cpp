@@ -13,7 +13,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "Game.h"
+#include "AppStateHandler.h"
+#include "_enums.h"
+#include "Engine.h"
 
  //Used to define the size of the developer console
 static const WORD MAX_CONSOLE_LINES = 500;
@@ -46,11 +48,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/,
 
 
 		//create the Game object
-		Game* game = new Game();
-
-		game->action();
-
-		delete game;
+		{
+			using namespace appstate;
+			Handler runApp(AppState::MainMenu, AppState::Exit);
+		}
 	}
 	catch (const char* e)	//Only char* exception to throw should be errors with creating Irrlicht device
 	{
