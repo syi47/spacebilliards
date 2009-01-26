@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/,
 		//create the Game object
 		{
 			using namespace appstate;
-			Handler runApp(AppState::MainMenu, AppState::Exit);
+			Handler runApp(AppState::LoadCore, AppState::Exit);
 		}
 	}
 	catch (const char* e)	//Only char* exception to throw should be errors with creating Irrlicht device

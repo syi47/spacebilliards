@@ -201,15 +201,6 @@ void Game::releaseScene()
 
 void Game::loadGame()
 {
-	//Set the window caption
-	Irrlicht::getDevice()->setWindowCaption(L"Asteroids Demo");
-
-	//Point irrlicht at the data folder for resources
-	Irrlicht::getDevice()->getFileSystem()->changeWorkingDirectoryTo("data");
-
-	//seed rand() with current time
-	srand(Irrlicht::getDevice()->getTimer()->getRealTime() );
-
 	//Set the player object as the device's EventReceiver
 	Irrlicht::getDevice()->setEventReceiver(&m_Player);
 
