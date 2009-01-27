@@ -1,8 +1,18 @@
 Programming and Art unless otherwise stated:
 T. Phillip Johnson
 
+Game Concept:
+Corey Knight
+
+Sounds obtained as freeware from:
+
+
+Ship model based on freeware Ship1 model from 3dCafe.com
+
+
+
+
 With Thanks To:
 Corey Knight,
 Krystal Armstrong,
 Caffeine & Stubbornness
-
