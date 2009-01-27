@@ -24,18 +24,18 @@ namespace appstate
 class IAppState
 {
 public:
-	IAppState(){};
+	IAppState() : m_NextAppState(AppState::Exit){};
 
 	virtual ~IAppState(){};
 
 	virtual void action() = 0;
 
-	AppState::Enum GetNextState() const {return this->m_AppState;}
+	AppState::Enum GetNextState() const {return this->m_NextAppState;}
 
 protected:
-	AppState::Enum m_AppState;
+	AppState::Enum m_NextAppState;
 
-	void SetNextState(AppState::Enum nextState) {this->m_AppState = nextState;}
+	void SetNextState(AppState::Enum nextState) {this->m_NextAppState = nextState;}
 };
 
 }//namespace appstate
