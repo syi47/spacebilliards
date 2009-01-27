@@ -125,7 +125,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				WarnAsError="false"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -201,6 +201,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\LoadCore.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\main.cpp"
 				>
 			</File>
@@ -260,6 +264,10 @@
 			</File>
 			<File
 				RelativePath=".\src\IAppState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\LoadCore.h"
 				>
 			</File>
 			<File

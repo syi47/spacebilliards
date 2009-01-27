@@ -48,15 +48,17 @@ void Game::action()
 		{
 		case (GameState::Loading):
 			loadGame();
-			break;
+			continue;
 
 		case (GameState::Playing):
 			runGame();
-			break;
+			continue;
 		}
 	}
 
 	exitGame();
+
+	m_NextAppState = AppState::Exit;
 
 }
 
@@ -259,11 +261,11 @@ void Game::runGame()
 		}
 		if (!asteroidsleft)
 		{
-			m_GameState = GameState::Finished;
 			releaseScene();
 			loadScene();
 		}
 	}
+	m_GameState = GameState::Finished;
 	LOG_INFO("...Exiting game loop");
 }
 
