@@ -42,7 +42,7 @@ public:
 	void loadPlayerObjects();
 	void releasePlayerObjects();
 
-protected:
+private:
 	struct PlayerInput
 	{
 		PlayerInput();

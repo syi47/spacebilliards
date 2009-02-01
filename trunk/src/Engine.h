@@ -59,8 +59,20 @@ public:
 			Irrlicht::getDevice()->getVideoDriver()->endScene();
 		}
 	}
+
+	static bool run()
+	{
+		bool retval = Irrlicht::getDevice()->run();
+
+		if (true == retval && Irrlicht::getDevice()->isWindowActive() == false)
+		{
+			Irrlicht::getDevice()->sleep(10, true);
+		}
+
+		return retval;
+	}
 	
-protected:
+private:
 	Irrlicht(void)
 	{
 		//Initialise Irrlicht device

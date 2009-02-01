@@ -24,11 +24,14 @@ class PlayerShip :
 {
 public:
 	PlayerShip(irr::scene::ISceneNode* node, irr::scene::PointMassAnimator* animator)
-		: MovingObject(node, animator){}
+		: MovingObject(node, animator), m_PlayerHasHitAsteroid(false){}
 
 	const ObjectType getType() const {return OT_PLAYERSHIP;}
 
 	void collide(const MovingObject* other, const irr::core::vector3df& collisionvector);
+
+private:
+	bool m_PlayerHasHitAsteroid;
 };
 
 class BlackHole : public MovingObject

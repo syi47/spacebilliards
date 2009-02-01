@@ -36,6 +36,7 @@ namespace GameState
 	{
 		Loading,
 		Playing,
+		GameOver,
 		Finished
 	};
 }
@@ -63,6 +64,8 @@ private:
 	void runGame();
 
 	void exitGame();
+
+	void showGameOver();
 
 private:
 	GameState::Enum m_GameState;

@@ -17,6 +17,7 @@
 #include "Game.h"
 #include "fmod.h"
 #include "ObjectFactory.h"
+#include "GameTimer.h"
 
 #pragma comment(lib, "irrlicht.lib")
 #pragma comment(lib, "fmodvc.lib")
@@ -42,6 +43,7 @@ Game::~Game(void)
 
 void Game::action()
 {
+	LOG_INFO("Entering game loop...");
 	while (m_GameState != GameState::Finished)
 	{
 		switch (m_GameState)
@@ -53,13 +55,15 @@ void Game::action()
 		case (GameState::Playing):
 			runGame();
 			continue;
+
+		case (GameState::GameOver):
+			showGameOver();
+			continue;
 		}
 	}
+	LOG_INFO("...Exiting game loop");
 
 	exitGame();
-
-	m_NextAppState = AppState::Exit;
-
 }
 
 void Game::checkCollisions()
@@ -174,8 +178,8 @@ void Game::loadScene()
 	irr::scene::ILightSceneNode* mainlight = scenemgr->addLightSceneNode(0, vector3df(-1.0f, 1.0f, -2.0f).normalize() );
 	if (mainlight != NULL)
 	{
-		LOG_INFO("Main Directional Light added");
 		mainlight->getLightData().Type = irr::video::ELT_DIRECTIONAL;
+		LOG_INFO("Main Directional Light added");
 	}
 
 }
@@ -214,59 +218,55 @@ void Game::loadGame()
 void Game::runGame()
 {
 	//run the game
-	LOG_INFO("Entering game loop...");
-	while(Irrlicht::getDevice()->run() )
+	if (Irrlicht::run() != true)
 	{
-		if (Irrlicht::getDevice()->isWindowActive() == false)
+		LOG_INFO("Irrlicht returned false from run()");
+		m_GameState = GameState::Finished;
+		return;
+	}
+
+	//Update the player
+	m_Player.Update();
+
+	//Let the game world affect each object within it
+	for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+	{
+		m_PlayArea->actOn(*object);
+	}
+
+	checkCollisions();
+
+	//check the objects for deletion
+	Object_it object_i = m_Objects.begin();
+	while (object_i != m_Objects.end() )
+	{
+		Object_it object = object_i++;
+
+		if ( (*object)->getSceneNode() == 0 )
 		{
-			Irrlicht::getDevice()->sleep(10, true);
-			continue;
-		}
-
-		//Update the player
-		m_Player.Update();
-
-		//Let the game world affect each object within it
-		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
-		{
-			m_PlayArea->actOn(*object);
-		}
-
-		checkCollisions();
-
-		//check the objects for deletion
-		Object_it object_i = m_Objects.begin();
-		while (object_i != m_Objects.end() )
-		{
-			Object_it object = object_i++;
-
-			if ( (*object)->getSceneNode() == 0 )
-			{
-				//object has been cleaned up and is awaiting deletion
-				delete (*object);
-				object_i = m_Objects.erase(object);
-			}
-		}
-
-		Irrlicht::drawAll();
-
-		//Check for all asteroids sunk
-		bool asteroidsleft = false;
-		for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
-		{
-			if ( (*object)->getType() == OT_ASTEROID)
-			{
-				asteroidsleft = true;
-			}
-		}
-		if (!asteroidsleft)
-		{
-			releaseScene();
-			loadScene();
+			//object has been cleaned up and is awaiting deletion
+			delete (*object);
+			object_i = m_Objects.erase(object);
 		}
 	}
-	m_GameState = GameState::Finished;
-	LOG_INFO("...Exiting game loop");
+
+	Irrlicht::drawAll();
+
+	//Check for all asteroids sunk
+	bool asteroidsleft = false;
+	for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+	{
+		if ( (*object)->getType() == OT_ASTEROID)
+		{
+			asteroidsleft = true;
+		}
+	}
+	if (!asteroidsleft)
+	{
+		GameTimer::getInstance().stop();
+		showGameOver();
+	}
+
 }
 
 void Game::exitGame()
@@ -282,6 +282,13 @@ void Game::exitGame()
 	//Clean up FMOD
 	LOG_INFO("Closing FMOD");
 	FSOUND_Close();
+}
+
+void Game::showGameOver()
+{
+	//TODO: stop the timer
+
+	m_GameState = GameState::Finished;
 }
 
 }//namespace appstate
