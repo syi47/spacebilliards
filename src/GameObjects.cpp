@@ -16,6 +16,7 @@
 
 #include "GameObjects.h"
 #include "CSceneNodeAnimatorScale.h"
+#include "GameTimer.h"
 
 /********************************************************************************************/
 /*										Asteroid											*/
@@ -104,6 +105,12 @@ void PlayerShip::collide(const MovingObject* other, const irr::core::vector3df& 
 	{
 	case OT_ASTEROID:
 		{
+			if (false == m_PlayerHasHitAsteroid)
+			{
+				m_PlayerHasHitAsteroid = true;
+				GameTimer::getInstance().start();
+			}
+
 			irr::core::vector3df veltoadd(collisionvector);
 			//veltoadd.normalize();
 			//veltoadd *= (calcImpulse(other, collisionvector, 1.0f) / this->getAnimator()->getMass() );

@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\GameTimer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\GameWorld.cpp"
 				>
 			</File>
@@ -256,6 +260,10 @@
 			</File>
 			<File
 				RelativePath=".\src\GameObjects.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GameTimer.h"
 				>
 			</File>
 			<File

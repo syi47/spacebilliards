@@ -27,7 +27,6 @@ void LoadCore::action()
 	srand(Irrlicht::getDevice()->getTimer()->getRealTime() );
 
 	this->SetNextState(AppState::MainMenu);
-
 }
 
 
