@@ -89,6 +89,17 @@ void CSceneNodeAnimatorScale::deserializeAttributes(io::IAttributes* in, io::SAt
 	recalculateImmediateValues();
 }
 
+ISceneNodeAnimator* CSceneNodeAnimatorScale::createClone(irr::scene::ISceneNode* /*node*/, irr::scene::ISceneManager* /*newManager*/)
+{
+	CSceneNodeAnimatorScale* retval = new CSceneNodeAnimatorScale(this->StartScale, this->EndScale, this->TimeForScaling,
+								this->Loop, this->StartTime);
+
+	retval->ScaleDiff = this->ScaleDiff;
+	retval->TimeFactor = this->TimeFactor;
+
+	return retval;
+}
+
 
 }	//end namespace scene
 }	//end namespace irr

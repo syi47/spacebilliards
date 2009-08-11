@@ -48,6 +48,9 @@ class CSceneNodeAnimatorScale :
 		/// Reads attributes of the scene node animator.
 		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0);
 
+		/// Creates a clone of the scene node animator
+		virtual ISceneNodeAnimator* createClone(ISceneNode* node, ISceneManager* newManager=0);
+
 		/// Returns type of the scene node animator
 		virtual ESCENE_NODE_ANIMATOR_TYPE getType()	{ return ESNAT_UNKNOWN; }
 

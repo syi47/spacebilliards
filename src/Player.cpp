@@ -53,7 +53,7 @@ Player::~Player(void)
 }
 
 
-bool Player::OnEvent(irr::SEvent eventdata)
+bool Player::OnEvent(const irr::SEvent& eventdata)
 {
 	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT)
 	{
