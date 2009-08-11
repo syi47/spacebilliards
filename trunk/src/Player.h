@@ -33,8 +33,8 @@ public:
 	///Returns a pointer to the Ship Object
 	MovingObject* getShipObject() {return m_ShipObject;}
 
-	///Receives input events and sets the Player's movement requests
-	bool OnEvent(irr::SEvent event);
+	///Receives input events and sets the Players movement requests
+	bool OnEvent(const irr::SEvent& event);
 
 	///Updates the player each game frame
 	void Update();

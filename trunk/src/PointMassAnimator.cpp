@@ -87,6 +87,19 @@ void PointMassAnimator::addForce(const irr::core::vector3df &force)
 	m_Forces += force;
 }
 
+ISceneNodeAnimator* PointMassAnimator::createClone(irr::scene::ISceneNode* /*node*/, irr::scene::ISceneManager* /*newManager*/)
+{
+	PointMassAnimator* retval = new PointMassAnimator();
+
+	retval->m_Forces = this->m_Forces;
+	retval->m_Mass = this->m_Mass;
+	retval->m_Speed = this->m_Speed;
+	retval->m_StartTime = this->m_StartTime;
+	retval->m_Velocity = this->m_Velocity;
+
+	return retval;
+}
+
 
 }//namespace scene
 }//namespace irr

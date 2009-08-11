@@ -35,6 +35,9 @@ public:
 	///Animates the node
 	void animateNode(ISceneNode* node, u32 timeMs);
 
+	/// Creates a clone of the scene node animator
+	virtual ISceneNodeAnimator* createClone(ISceneNode* node, ISceneManager* newManager=0);
+
 	///Sets the velocity of the node
 	inline void setVelocity(const irr::core::vector3df& vel) {m_Velocity = vel;}
 
