@@ -13,16 +13,24 @@
    limitations under the License.
 */
 
-
 #pragma once
 
 #include "MovingObject.h"
+#include "Engine.h"
+#include "irr/scene/PointMassAnimator.h"
+#include "fmod.h"
 
-class ObjectFactory
+class BlackHole : public MovingObject
 {
 public:
+	///Constructor
+	BlackHole(irr::scene::ISceneNode* node/*, irr::scene::PointMassAnimator* animator*/);
 
-	MovingObject* createAsteroid();
-	MovingObject* createBlackHole();
-	MovingObject* createPlayerShip();
+	const ObjectType::Enum getType() const {return ObjectType::BlackHole;}
+
+	void collide(const MovingObject* other, const irr::core::vector3df& collisionvector);
+
+protected:
+	static FSOUND_SAMPLE* m_SuckSound;
+	static int m_SuckChannel;
 };

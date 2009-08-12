@@ -17,7 +17,7 @@
 #pragma once
 #include "Engine.h"
 #include "fmod.h"
-#include "GameObjects.h"
+#include "PlayerShip.h"
 
 /**
 \class Player

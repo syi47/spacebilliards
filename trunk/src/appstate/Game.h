@@ -16,20 +16,23 @@
 
 #pragma once
 
-#include "MovingObject.h"
-#include "Player.h"
-#include "GameWorld.h"
+#include "../MovingObject.h"
+#include "../Player.h"
+#include "../GameWorld.h"
 #include <vector>
-#include "Engine.h"
+#include "../Engine.h"
 #include "IAppState.h"
+
+
+namespace appstate
+{
+
 
 
 /**
 \brief Defines actions when the game is playing
 
 **/
-
-
 namespace GameState
 {
 	enum Enum
@@ -40,9 +43,6 @@ namespace GameState
 		Finished
 	};
 }
-
-namespace appstate
-{
 
 class Game : public IAppState
 {

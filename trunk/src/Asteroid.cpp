@@ -12,15 +12,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-
-#include "GameObjects.h"
-#include "CSceneNodeAnimatorScale.h"
+#include "Asteroid.h"
+#include "irr/scene/CSceneNodeAnimatorScale.h"
 #include "GameTimer.h"
 
-/********************************************************************************************/
-/*										Asteroid											*/
-/********************************************************************************************/
 FSOUND_SAMPLE* Asteroid::m_HitSound = NULL;
 int Asteroid::m_HitChannel = -1;
 
@@ -49,8 +44,8 @@ void Asteroid::collide(const MovingObject* other, const irr::core::vector3df& co
 	using irr::core::vector3df;
 	switch (other->getType() )
 	{
-	case OT_PLAYERSHIP:
-	case OT_ASTEROID:
+	case ObjectType::PlayerShip:
+	case ObjectType::Asteroid:
 		{
 			//react to collision
 			vector3df veltoadd(collisionvector);
@@ -64,7 +59,7 @@ void Asteroid::collide(const MovingObject* other, const irr::core::vector3df& co
 			return;
 		}
 
-	case OT_BLACKHOLE:
+	case ObjectType::BlackHole:
 		{
 			irr::scene::ISceneManager* smgr = Irrlicht::getDevice()->getSceneManager();
 			//create an animator to delete the scene node
@@ -96,66 +91,3 @@ void Asteroid::collide(const MovingObject* other, const irr::core::vector3df& co
 	return;
 }
 
-/********************************************************************************************/
-/*										PlayerShip											*/
-/********************************************************************************************/
-void PlayerShip::collide(const MovingObject* other, const irr::core::vector3df& collisionvector)
-{
-	switch (other->getType() )
-	{
-	case OT_ASTEROID:
-		{
-			if (false == m_PlayerHasHitAsteroid)
-			{
-				m_PlayerHasHitAsteroid = true;
-				GameTimer::getInstance().start();
-			}
-
-			irr::core::vector3df veltoadd(collisionvector);
-			//veltoadd.normalize();
-			//veltoadd *= (calcImpulse(other, collisionvector, 1.0f) / this->getAnimator()->getMass() );
-			m_MoveAnimator->setVelocity(m_MoveAnimator->getVelocity() + veltoadd);
-			return;
-		}
-	}
-
-	return;
-}
-
-/********************************************************************************************/
-/*										BlackHole											*/
-/********************************************************************************************/\
-FSOUND_SAMPLE* BlackHole::m_SuckSound = NULL;
-int BlackHole::m_SuckChannel = -1;
-
-BlackHole::BlackHole(irr::scene::ISceneNode* node)
-: MovingObject(node, 0/*animator*/)
-{
-	//load the sound sample
-	if (m_SuckSound == NULL)
-	{
-		m_SuckSound = FSOUND_Sample_Load(FSOUND_FREE, "invin.wav", FSOUND_NORMAL, 0, 0);
-		if (m_SuckSound != NULL)
-		{
-			LOG_INFO("Black Hole Suck Sound successfully loaded");
-		}
-	}
-}
-
-
-void BlackHole::collide(const MovingObject* other, const irr::core::vector3df& /*collisionvector*/)
-{
-	switch (other->getType() )
-	{
-	case OT_ASTEROID:
-		{
-			//play the suck sound
-			if (!FSOUND_IsPlaying(m_SuckChannel) )
-				m_SuckChannel = FSOUND_PlaySound(FSOUND_FREE, m_SuckSound);
-			return;
-		}
-	}
-
-
-	return;
-}

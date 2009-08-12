@@ -16,13 +16,13 @@
 
 #pragma once
 
-#include "MovingObject.h"
-
-class ObjectFactory
+namespace ObjectType
 {
-public:
-
-	MovingObject* createAsteroid();
-	MovingObject* createBlackHole();
-	MovingObject* createPlayerShip();
+	enum Enum
+	{
+		Unknown = 0,
+		Asteroid,
+		PlayerShip,
+		BlackHole,
+	};
 };

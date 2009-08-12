@@ -16,8 +16,8 @@
 
 #include "Game.h"
 #include "fmod.h"
-#include "ObjectFactory.h"
-#include "GameTimer.h"
+#include "../ObjectFactory.h"
+#include "../GameTimer.h"
 
 #pragma comment(lib, "irrlicht.lib")
 #pragma comment(lib, "fmodvc.lib")
@@ -256,7 +256,7 @@ void Game::runGame()
 	bool asteroidsleft = false;
 	for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
 	{
-		if ( (*object)->getType() == OT_ASTEROID)
+		if ( (*object)->getType() == ObjectType::Asteroid)
 		{
 			asteroidsleft = true;
 		}

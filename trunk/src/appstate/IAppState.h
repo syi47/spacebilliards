@@ -16,13 +16,26 @@
 
 #pragma once
 
-#include "MovingObject.h"
+#include "../_enums.h"
 
-class ObjectFactory
+namespace appstate
+{
+
+class IAppState
 {
 public:
+	IAppState() : m_NextAppState(AppState::Exit){};
 
-	MovingObject* createAsteroid();
-	MovingObject* createBlackHole();
-	MovingObject* createPlayerShip();
+	virtual ~IAppState(){};
+
+	virtual void action() = 0;
+
+	AppState::Enum GetNextState() const {return this->m_NextAppState;}
+
+protected:
+	AppState::Enum m_NextAppState;
+
+	void SetNextState(AppState::Enum nextState) {this->m_NextAppState = nextState;}
 };
+
+}//namespace appstate

@@ -16,22 +16,13 @@
 
 #pragma once
 
-#include "ObjectTypes.h"
+#include "ObjectType.h"
 #include "Engine.h"
-#include "PointMassAnimator.h"
+#include "irr/scene/PointMassAnimator.h"
 
 
 class MovingObject
 {
-public:
-	enum ObjectType
-	{
-		OT_ASTEROID,
-		OT_PLAYERSHIP,
-		OT_BLACKHOLE,
-		OT_UNKNOWN,
-	};
-
 public:
 	MovingObject(irr::scene::ISceneNode* node, irr::scene::PointMassAnimator* animator);
 	~MovingObject(void);
@@ -55,7 +46,7 @@ public:
 	bool testForCollision(MovingObject* other);
 
 	///Returns what type of object this instance is
-	virtual const ObjectType getType() const = 0;
+	virtual const ObjectType::Enum getType() const = 0;
 
 	///Returns the last object that this object collided with
 	inline MovingObject* getLastCollider() {return m_LastCollider;}
