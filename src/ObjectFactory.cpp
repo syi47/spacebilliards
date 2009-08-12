@@ -15,7 +15,9 @@
 
 
 #include "ObjectFactory.h"
-#include "GameObjects.h"
+#include "PlayerShip.h"
+#include "Asteroid.h"
+#include "BlackHole.h"
 
 //ObjectFactory::ObjectFactory()
 //{

@@ -14,15 +14,18 @@
 */
 
 
-#pragma once
+#include "Menu.h"
 
-#include "MovingObject.h"
 
-class ObjectFactory
+namespace appstate
 {
-public:
 
-	MovingObject* createAsteroid();
-	MovingObject* createBlackHole();
-	MovingObject* createPlayerShip();
-};
+
+void Menu::action()
+{
+	this->SetNextState(AppState::InGame);
+	return;
+}
+
+
+}//namespace appstate

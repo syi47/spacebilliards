@@ -181,19 +181,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\AppStateHandler.cpp"
+				RelativePath=".\src\appstate\AppStateHandler.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\CSceneNodeAnimatorScale.cpp"
+				RelativePath=".\src\Asteroid.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Game.cpp"
+				RelativePath=".\src\BlackHole.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\GameObjects.cpp"
+				RelativePath=".\src\irr\scene\CSceneNodeAnimatorScale.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\appstate\Game.cpp"
 				>
 			</File>
 			<File
@@ -205,7 +209,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\LoadCore.cpp"
+				RelativePath=".\src\appstate\LoadCore.cpp"
 				>
 			</File>
 			<File
@@ -213,7 +217,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Menu.cpp"
+				RelativePath=".\src\appstate\Menu.cpp"
 				>
 			</File>
 			<File
@@ -229,7 +233,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\PointMassAnimator.cpp"
+				RelativePath=".\src\PlayerShip.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\irr\scene\PointMassAnimator.cpp"
 				>
 			</File>
 		</Filter>
@@ -243,11 +251,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\AppStateHandler.h"
+				RelativePath=".\src\appstate\AppStateHandler.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\CSceneNodeAnimatorScale.h"
+				RelativePath=".\src\Asteroid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\BlackHole.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\irr\scene\CSceneNodeAnimatorScale.h"
 				>
 			</File>
 			<File
@@ -255,11 +271,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Game.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\GameObjects.h"
+				RelativePath=".\src\appstate\Game.h"
 				>
 			</File>
 			<File
@@ -271,15 +283,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\IAppState.h"
+				RelativePath=".\src\appstate\IAppState.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\LoadCore.h"
+				RelativePath=".\src\appstate\LoadCore.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Menu.h"
+				RelativePath=".\src\appstate\Menu.h"
 				>
 			</File>
 			<File
@@ -291,7 +303,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\ObjectTypes.h"
+				RelativePath=".\src\ObjectType.h"
 				>
 			</File>
 			<File
@@ -299,7 +311,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\PointMassAnimator.h"
+				RelativePath=".\src\PlayerShip.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\irr\scene\PointMassAnimator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\SIrrlicht.h"
 				>
 			</File>
 		</Filter>
