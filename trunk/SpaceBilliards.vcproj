@@ -119,7 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="D:\API\fmodapi375win\api\inc;&quot;D:\API\irrlicht-1.3\include&quot;"
+				AdditionalIncludeDirectories="C:\fmodapi375win\api\inc;&quot;C:\irrlicht-1.5.1\include&quot;"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -140,7 +140,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="D:\API\fmodapi375win\api\lib;&quot;D:\API\irrlicht-1.3\lib\Win32-visualstudio&quot;"
+				AdditionalLibraryDirectories="C:\fmodapi375win\api\lib;&quot;C:\irrlicht-1.5.1\lib\Win32-visualstudio&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -181,10 +181,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\appstate\AppStateHandler.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Asteroid.cpp"
 				>
 			</File>
@@ -206,6 +202,10 @@
 			</File>
 			<File
 				RelativePath=".\src\GameWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\appstate\Handler.cpp"
 				>
 			</File>
 			<File
@@ -247,11 +247,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\_enums.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\appstate\AppStateHandler.h"
+				RelativePath=".\src\_Enumerations.h"
 				>
 			</File>
 			<File
@@ -280,6 +276,10 @@
 			</File>
 			<File
 				RelativePath=".\src\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\appstate\Handler.h"
 				>
 			</File>
 			<File
@@ -316,10 +316,6 @@
 			</File>
 			<File
 				RelativePath=".\src\irr\scene\PointMassAnimator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\SIrrlicht.h"
 				>
 			</File>
 		</Filter>
