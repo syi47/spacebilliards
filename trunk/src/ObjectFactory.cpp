@@ -19,17 +19,33 @@
 #include "Asteroid.h"
 #include "BlackHole.h"
 
-//ObjectFactory::ObjectFactory()
-//{
-//	m_BlackHoleAnimator = 0;
-//}
-//
-//ObjectFactory::~ObjectFactory()
-//{
-//	if (m_BlackHoleAnimator)
-//		m_BlackHoleAnimator->drop();
-//}
-//
+MovingObject* ObjectFactory::createObject(const ObjectType::Enum type)
+{
+	MovingObject* returnValue = 0;
+
+	switch (type)
+	{
+	case (ObjectType::Asteroid):
+		returnValue = createAsteroid();
+		break;
+
+	case (ObjectType::BlackHole):
+		returnValue = createBlackHole();
+		break;
+
+	case (ObjectType::PlayerShip):
+		returnValue = createPlayerShip();
+		break;
+
+	default:
+		returnValue = 0;
+		break;
+	}
+
+	return returnValue;
+}
+
+
 
 MovingObject* ObjectFactory::createAsteroid()
 {
@@ -96,11 +112,6 @@ MovingObject* ObjectFactory::createBlackHole()
 #endif
 
 		using irr::core::vector3df;
-
-		//Give it a random starting position in the game canvas
-		vector3df startPos(static_cast<float>(rand()%180-90), 
-							static_cast<float>(rand()%130-65), 0.0f);
-		scenenode->setPosition(startPos);
 
 		//Set the SceneNode up with starting rotation
 		irr::scene::ISceneNodeAnimator* anim = smgr->createRotationAnimator(

@@ -51,6 +51,18 @@ public:
 	///Returns the last object that this object collided with
 	inline MovingObject* getLastCollider() {return m_LastCollider;}
 
+	///Sets the position of the object
+	inline void setPosition(irr::core::vector3df position) {getSceneNode()->setPosition(position);}
+
+	///Returns the position of the object
+	inline const irr::core::vector3df getPosition() const {return getSceneNode()->getPosition();}
+
+	//Sets the rotation of the object
+	inline void setRotation(irr::core::vector3df rotation) {getSceneNode()->setRotation(rotation);}
+
+	//Returns the rotation of the object
+	inline const irr::core::vector3df getRotation() const {return getSceneNode()->getRotation();}
+
 	///Process collisions with another object
 	virtual void collide(const MovingObject* other, const irr::core::vector3df& collisionvector) = 0;
 

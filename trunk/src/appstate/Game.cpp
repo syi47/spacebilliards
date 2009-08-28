@@ -23,7 +23,7 @@
 #pragma comment(lib, "fmodvc.lib")
 
 
-typedef std::vector<MovingObject*>::iterator Object_it;
+typedef std::vector<MovingObject*>::iterator ObjectIterator;
 
 namespace appstate
 {
@@ -72,10 +72,10 @@ void Game::checkCollisions()
 	if (m_Objects.empty() )
 		return;
 
-	for (Object_it CurrentObject = m_Objects.begin();
+	for (ObjectIterator CurrentObject = m_Objects.begin();
 			CurrentObject != m_Objects.end()-1; ++CurrentObject)
 	{
-		for (Object_it OtherObject = CurrentObject+1;
+		for (ObjectIterator OtherObject = CurrentObject+1;
 				OtherObject != m_Objects.end(); ++OtherObject)
 		{
 			if ((*CurrentObject)->testForCollision(*OtherObject) )
@@ -90,7 +90,15 @@ void Game::loadScene()
 {
 
 	//Create the gameworld
-	m_PlayArea = new GameWorld(0.03f);
+	m_PlayArea = new GameWorld();
+	m_PlayArea->setDensity(0.03f);
+
+	//calculate the screen ratio
+	irr::core::dimension2di screenSize (Irrlicht::getDevice()->getVideoDriver()->getCurrentRenderTargetSize() );
+	float aspectRatio = static_cast<float>(screenSize.Width) / static_cast<float>(screenSize.Height);
+	m_PlayArea->setSize(aspectRatio*200.0f, 200.0f);
+
+
 
 
 	ObjectFactory factory;
@@ -102,56 +110,56 @@ void Game::loadScene()
 	m_Player.loadPlayerObjects();
 	m_Objects.push_back(m_Player.getShipObject() );
 
-	vector3df startpos = m_PlayArea->center();
+	vector3df startpos(0, 0, 0);
 	startpos.X += 0.5f*m_PlayArea->right();
-	m_Player.getShipObject()->getSceneNode()->setPosition(startpos);
-	m_Player.getShipObject()->getSceneNode()->setRotation(vector3df(0, 0, 90) );
+	m_Player.getShipObject()->setPosition(startpos);
+	m_Player.getShipObject()->setRotation(vector3df(0, 0, 90) );
 
 
 	//Create some Asteroids
 	float asteroidspacing = 1.3f;
-	startpos = m_PlayArea->center();
+	startpos.set(0, 0, 0);
 	startpos.X += 0.33f*m_PlayArea->left();
 	for (int i = 0; i < 5; ++i)
 	{
 		for (int j = 0; j < i+1; ++j)
 		{
 			//loops to create the asteroids in a triangle
-			MovingObject* newasteroid = factory.createAsteroid();
+			MovingObject* newasteroid = factory.createObject(ObjectType::Asteroid);
 			float spacing = 2.0f*asteroidspacing*newasteroid->getRadius();
 			vector3df placement(startpos);
 			placement.X -= i*(spacing);
 			placement.Y += j*spacing - (0.5f*i)*spacing;
 
-			newasteroid->getSceneNode()->setPosition(placement);
+			newasteroid->setPosition(placement);
 			m_Objects.push_back(newasteroid);
 		}
 	}
 
 	//Create the Black Holes
 	//top-left
-	MovingObject* newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->top(), 0) );
+	MovingObject* newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//top-right
-	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->top(), 0) );
+	newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-left
-	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->bottom(), 0) );
+	newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(m_PlayArea->left(), m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-right
-	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->bottom(), 0) );
+	newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(m_PlayArea->right(), m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//top-centre
-	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea->top(), 0) );
+	newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(0.0f, m_PlayArea->top(), 0) );
 	m_Objects.push_back(newBlackHole);
 	//bottom-centre
-	newBlackHole = factory.createBlackHole();
-	newBlackHole->getSceneNode()->setPosition(vector3df(0.0f, m_PlayArea->bottom(), 0) );
+	newBlackHole = factory.createObject(ObjectType::BlackHole);
+	newBlackHole->setPosition(vector3df(0.0f, m_PlayArea->bottom(), 0) );
 	m_Objects.push_back(newBlackHole);
 
 	//Add the camera
@@ -192,7 +200,7 @@ void Game::releaseScene()
 	m_Objects.erase(m_Objects.begin() );
 
 	//delete every asteroid in the list, then the list
-	for (Object_it i = m_Objects.begin(); i != m_Objects.end(); ++i)
+	for (ObjectIterator i = m_Objects.begin(); i != m_Objects.end(); ++i)
 	{
 		delete (*i);
 	}
@@ -229,32 +237,20 @@ void Game::runGame()
 	m_Player.Update();
 
 	//Let the game world affect each object within it
-	for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+	for (ObjectIterator object = m_Objects.begin(); object != m_Objects.end(); object++)
 	{
 		m_PlayArea->actOn(*object);
 	}
 
 	checkCollisions();
 
-	//check the objects for deletion
-	Object_it object_i = m_Objects.begin();
-	while (object_i != m_Objects.end() )
-	{
-		Object_it object = object_i++;
-
-		if ( (*object)->getSceneNode() == 0 )
-		{
-			//object has been cleaned up and is awaiting deletion
-			delete (*object);
-			object_i = m_Objects.erase(object);
-		}
-	}
+	collectDeletedObjects();
 
 	Irrlicht::drawAll();
 
 	//Check for all asteroids sunk
 	bool asteroidsleft = false;
-	for (Object_it object = m_Objects.begin(); object != m_Objects.end(); ++object)
+	for (ObjectIterator object = m_Objects.begin(); object != m_Objects.end(); ++object)
 	{
 		if ( (*object)->getType() == ObjectType::Asteroid)
 		{
@@ -290,5 +286,22 @@ void Game::showGameOver()
 
 	m_GameState = GameState::Finished;
 }
+
+void Game::collectDeletedObjects()
+{
+	//check the objects for deletion
+	ObjectIterator objectIterator = m_Objects.begin();
+	while (objectIterator != m_Objects.end() )
+	{
+		ObjectIterator object = objectIterator++;
+		//no need to check the PLayer object for deletion until end of game
+
+		if ( (*object)->getSceneNode() == 0 )
+		{
+			//object has been cleaned up and is awaiting deletion
+			delete (*object);
+			objectIterator = m_Objects.erase(object);
+		}
+	}}
 
 }//namespace appstate

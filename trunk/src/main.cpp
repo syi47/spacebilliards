@@ -23,8 +23,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "appstate/AppStateHandler.h"
-#include "_enums.h"
+#include "appstate/Handler.h"
+#include "_Enumerations.h"
 #include "Engine.h"
 
  //Used to define the size of the developer console
@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/,
 		//create the Game object
 		{
 			using namespace appstate;
-			Handler runApp(AppState::LoadCore, AppState::Exit);
+			Handler runApp(ApplicationState::LoadCore, ApplicationState::Exit);
 		}
 	}
 	catch (const char* e)	//Only char* exception to throw should be errors with creating Irrlicht device

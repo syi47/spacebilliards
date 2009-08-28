@@ -16,17 +16,27 @@
 
 #pragma once
 
-#include "IAppState.h"
+#include "../_Enumerations.h"
 
 namespace appstate
 {
 
-class Menu : public IAppState
+class Handler
 {
 public:
-	virtual void action();
+	Handler(ApplicationState::Enum firstState = ApplicationState::LoadCore, ApplicationState::Enum exitState = ApplicationState::Exit);
+	~Handler(void);
+
+	void handle();
+
+private:
+	ApplicationState::Enum m_NextState;
+
+	ApplicationState::Enum m_ExitState;
+
+	///Factory method to create the next application state object from an enum value
+	class IAppState* createApplicationState(ApplicationState::Enum state);
+
 };
-
-
 
 }//namespace appstate

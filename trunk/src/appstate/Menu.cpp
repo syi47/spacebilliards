@@ -23,7 +23,7 @@ namespace appstate
 
 void Menu::action()
 {
-	this->SetNextState(AppState::InGame);
+	this->SetNextState(ApplicationState::InGame);
 	return;
 }
 

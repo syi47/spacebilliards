@@ -55,6 +55,7 @@ Player::~Player(void)
 
 bool Player::OnEvent(const irr::SEvent& eventdata)
 {
+	bool handled = false;
 	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT)
 	{
 		//Process keyboard event
@@ -63,39 +64,43 @@ bool Player::OnEvent(const irr::SEvent& eventdata)
 		case irr::KEY_UP:
 		{
 			m_Input.Forwards = eventdata.KeyInput.PressedDown;
+			handled = true;
 			break;
 		}
 
 		case irr::KEY_DOWN:
 		{
 			m_Input.Backwards = eventdata.KeyInput.PressedDown;
+			handled = true;
 			break;
 		}
 
 		case irr::KEY_LEFT:
 		{
 			m_Input.TurnLeft = eventdata.KeyInput.PressedDown;
+			handled = true;
 			break;
 		}
 
 		case irr::KEY_RIGHT:
 		{
 			m_Input.TurnRight = eventdata.KeyInput.PressedDown;
+			handled = true;
 			break;
 		}
 
 		case irr::KEY_SPACE:
 		{
 			m_Input.Firing = eventdata.KeyInput.PressedDown;
+			handled = true;
 			break;
 		}
 
 		default:
-			return false;
+			handled = false;
 		}
-		return true;
 	}
-	return false;
+	return (handled);
 }
 
 void Player::Update()
@@ -188,7 +193,7 @@ void Player::Update()
 void Player::loadPlayerObjects()
 {
 	ObjectFactory factory;
-	m_ShipObject = dynamic_cast<PlayerShip*>(factory.createPlayerShip() );
+	m_ShipObject = dynamic_cast<PlayerShip*>(factory.createObject(ObjectType::PlayerShip) );
 
 	irr::scene::ISceneNode* scenenode = m_ShipObject->getSceneNode();
 	irr::scene::ISceneManager* smgr = Irrlicht::getDevice()->getSceneManager();
