@@ -17,11 +17,14 @@
 #pragma once
 
 #include "MovingObject.h"
+#include "ObjectType.h"
 
 class ObjectFactory
 {
 public:
+	MovingObject* createObject(const ObjectType::Enum type);
 
+private:
 	MovingObject* createAsteroid();
 	MovingObject* createBlackHole();
 	MovingObject* createPlayerShip();

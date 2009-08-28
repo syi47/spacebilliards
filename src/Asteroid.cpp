@@ -76,7 +76,7 @@ void Asteroid::collide(const MovingObject* other, const irr::core::vector3df& co
 			using irr::core::vector3df;
 			//create an animator to move the scene node towards the centre of the black hole
 			irr::scene::ISceneNodeAnimator* moveanim = smgr->createFlyStraightAnimator(
-				m_SceneNode->getPosition(), other->getSceneNode()->getPosition(), 1500);
+				getPosition(), other->getPosition(), 1500);
 			m_SceneNode->addAnimator(moveanim);
 			moveanim->drop();
 

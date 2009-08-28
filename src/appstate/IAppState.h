@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "../_enums.h"
+#include "../_Enumerations.h"
 
 namespace appstate
 {
@@ -24,18 +24,18 @@ namespace appstate
 class IAppState
 {
 public:
-	IAppState() : m_NextAppState(AppState::Exit){};
+	IAppState() : m_NextApplicationState(ApplicationState::Exit){};
 
 	virtual ~IAppState(){};
 
 	virtual void action() = 0;
 
-	AppState::Enum GetNextState() const {return this->m_NextAppState;}
+	ApplicationState::Enum GetNextState() const {return this->m_NextApplicationState;}
 
 protected:
-	AppState::Enum m_NextAppState;
+	ApplicationState::Enum m_NextApplicationState;
 
-	void SetNextState(AppState::Enum nextState) {this->m_NextAppState = nextState;}
+	void SetNextState(ApplicationState::Enum nextState) {this->m_NextApplicationState = nextState;}
 };
 
 }//namespace appstate

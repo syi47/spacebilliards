@@ -55,6 +55,8 @@ public:
 private:
 	void checkCollisions();
 
+	void collectDeletedObjects();
+
 	void loadScene();
 
 	void releaseScene();

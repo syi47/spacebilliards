@@ -16,10 +16,16 @@
 
 #include "MovingObject.h"
 
-
 MovingObject::MovingObject(irr::scene::ISceneNode* node, irr::scene::PointMassAnimator* animator)
 {
-	m_SceneNode = node;
+	if (0 != node)
+	{
+		m_SceneNode = node;
+	}
+	else
+	{
+		m_SceneNode = Irrlicht::getDevice()->getSceneManager()->addEmptySceneNode();
+	}
 	m_MoveAnimator = animator;
 	m_LastCollider = 0;
 	calculateBoundingSphere();
@@ -44,7 +50,7 @@ void MovingObject::calculateBoundingSphere()
 	const irr::core::aabbox3df& bb = m_SceneNode->getTransformedBoundingBox();
 	m_Radius = 0.5f*(bb.getExtent().X - bb.getCenter().X);
 	m_Radius = irr::core::max_(m_Radius, 0.5f*(bb.getExtent().Y - bb.getCenter().Y) );
-	//No need to check Z-extents of bounding box
+	//2D game - No need to check Z-extents of bounding box
 }
 
 bool MovingObject::testForCollision(MovingObject* other)
@@ -63,7 +69,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 	//Inter-penetrating collision detection code & Hacked response code
 	using irr::core::vector3df;
 	float bothradii = this->getRadius() + other->getRadius();
-	vector3df distance = other->getSceneNode()->getPosition() - this->getSceneNode()->getPosition();
+	vector3df distance = other->getPosition() - this->getPosition();
 
 
 	if (distance.getLengthSQ() <= bothradii * bothradii)
@@ -113,7 +119,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 
 	//Early escape test, if the length of the movevec is less than the distance
 	//between the closest edges of the circles, there's no way they can hit
-	float distsq = other->getSceneNode()->getPosition().getDistanceFromSQ(this->getSceneNode()->getPosition() );
+	float distsq = other->getPosition().getDistanceFromSQ(this->getPosition() );
 	float sumradii = (this->getRadius() + other->getRadius() );
 	float sumradiisq = sumradii * sumradii;
 
@@ -126,7 +132,7 @@ bool MovingObject::testForCollision(MovingObject* other)
 	N.normalize();
 
 	//Find C, the vector from the centre of circleA to the centre of circleB
-	vector3df C = other->getSceneNode()->getPosition() - this->getSceneNode()->getPosition();
+	vector3df C = other->getPosition() - this->getPosition();
 
 	//D = N dot C = ||C|| * cos(angle between N and C)
 	float D = N.dotProduct(C);
@@ -184,11 +190,11 @@ bool MovingObject::testForCollision(MovingObject* other)
 	}
 
 	//get the magnitude of the movement vector
-	float mag = movevec.getLength();
+	float magnitude = movevec.getLength();
 
 	//Make sure the distance A has to move to touch B is not greater than
 	//the magnitude of the movement vector
-	if (mag < distance)
+	if (magnitude < distance)
 		return false;
 
 	//IT IS CONFIRMED THAT THE OBJECTS WILL COLLIDE!!!
@@ -206,16 +212,16 @@ bool MovingObject::testForCollision(MovingObject* other)
 			othermult = distance / other->getAnimator()->getSpeed();
 
 		//move the objects to stop them interpenetrating
-		//this->getSceneNode()->setPosition(this->getSceneNode()->getPosition() 
+		//this->getSceneNode()->setPosition(this->getPosition() 
 		//					+ thismult*this->getAnimator()->getVelocity() );
-		//other->getSceneNode()->setPosition(other->getSceneNode()->getPosition() 
+		//other->getSceneNode()->setPosition(other->getPosition() 
 		//					+ othermult*other->getAnimator()->getVelocity() );
 		this->getAnimator()->setVelocity(this->getAnimator()->getVelocity() + thismult*this->getAnimator()->getVelocity() );
 		other->getAnimator()->setVelocity(othermult*other->getAnimator()->getVelocity() );
 	}
 	
 	//calculate the collision normal
-	vector3df norm(0, 1, 0);// = other->getSceneNode()->getPosition() - this->getSceneNode()->getPosition();
+	vector3df norm(0, 1, 0);// = other->getPosition() - this->getPosition();
 
 	//this->collide(other, norm);
 	//this->m_LastCollider = other;
@@ -239,12 +245,12 @@ void MovingObject::projectOutOfCollision(const MovingObject* collider)
 
 	//calculate distance to move the spheres back
 	float bothrads = m_Radius + collider->getRadius();
-	float dist = static_cast<irr::f32>(m_SceneNode->getPosition().getDistanceFrom(
-				collider->getSceneNode()->getPosition() ) );
+	float dist = static_cast<irr::f32>(getPosition().getDistanceFrom(
+				collider->getPosition() ) );
 	dist = bothrads - dist;
 	//Old code here:
 	//float distsq = bothrads + m_SceneNode->getPosition().getDistanceFromSQ(
-	//			collider->getSceneNode()->getPosition() );
+	//			collider->getPosition() );
 	//float dist = sqrtf(distsq) - bothrads;
 
 	//create the total change of position (velocity) vector
@@ -268,7 +274,7 @@ void MovingObject::projectOutOfCollision(const MovingObject* collider)
 		movevelocity *= distance;
 	}
 	//edit this object's position
-	m_SceneNode->setPosition(m_SceneNode->getPosition() + movevelocity);
+	m_SceneNode->setPosition(getPosition() + movevelocity);
 
 	//DEBUG: edit this node's velocity
 	m_MoveAnimator->addVelocity(vtotal/2.0f);
@@ -296,7 +302,7 @@ void MovingObject::elasticCollision(const MovingObject* other, const irr::core::
 	using irr::core::vector3df;
 	vector3df newpos = collisionpoint - this->getRadius() * -collisionnormal;
 
-	this->getSceneNode()->setPosition(newpos);
+	this->setPosition(newpos);
 
 
 	//find the length of the component of each of the velocity vectors along the normal

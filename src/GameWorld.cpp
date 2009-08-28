@@ -16,8 +16,27 @@
 
 #include "GameWorld.h"
 
-GameWorld::GameWorld(const float density)
-: m_BBox(0, 0, -100.0f, 0, 0, 100.0f)
+	static const irr::core::vector3df Up(0, 1, 0);
+	static const irr::core::vector3df Down(0, -1, 0);
+	static const irr::core::vector3df Left(-1, 0, 0);
+	static const irr::core::vector3df Right(1, 0, 0);
+
+	
+namespace Sides
+{
+	enum Enum
+	{
+		None	= 0,
+		Left	= 0x01,
+		Right	= 0x02,
+		Top		= 0x04,
+		Bottom	= 0x08,
+	};
+}
+
+GameWorld::GameWorld()
+: m_Density(0.0f),
+m_BoundarySize(0, 0)
 {
 #ifdef _DEBUG
 	irr::core::dimension2di size(800, 600);
@@ -29,137 +48,53 @@ GameWorld::GameWorld(const float density)
 
 	float xextent =  (static_cast<float>(size.Height) / static_cast<float>(size.Width) ) * (1.33f * 130.0f);
 
-	m_BBox.MaxEdge.X = xextent;
-	m_BBox.MaxEdge.Y = yextent;
-	m_BBox.MinEdge.X = -xextent;
-	m_BBox.MinEdge.Y = -yextent;
+	setSize(2*xextent, 2*yextent);
 
-	m_Density = density;
 }
-
-GameWorld::Side GameWorld::isOutsideBounds(const class MovingObject* object) const
-{
-
-	if (!object || !object->getSceneNode() )
-		return NO_SIDE;
-
-	using irr::core::vector3df;
-	vector3df testpoint(object->getSceneNode()->getPosition() );
-	float testradius = object->getRadius();
-
-	Side returnvalue = NO_SIDE;
-
-	//Check against top edge
-	if (!m_BBox.isPointInside(vector3df(testpoint.X, testpoint.Y+testradius, testpoint.Z) ) )
-		returnvalue = TOP_SIDE;
-	else
-	{//Only check bottom edge if not over top edge
-		//check against bottom edge
-		if (!m_BBox.isPointInside(vector3df(testpoint.X, testpoint.Y-testradius, testpoint.Z) ) )
-			returnvalue = BOTTOM_SIDE;
-	}
-
-	//Check against left edge
-	if (!m_BBox.isPointInside(vector3df(testpoint.X-testradius, testpoint.Y, testpoint.Z) ) )
-	{
-		switch (returnvalue)
-		{
-		case (TOP_SIDE):
-			returnvalue = TOPANDLEFT_SIDE;
-			break;
-
-		case (BOTTOM_SIDE):
-			returnvalue = BOTTOMANDLEFT_SIDE;
-			break;
-
-		default:
-			returnvalue = LEFT_SIDE;
-			break;
-		}
-	}
-	else
-	{//Only check right edge if not over left edge
-		//Check against right side
-		if (!m_BBox.isPointInside(vector3df(testpoint.X+testradius, testpoint.Y, testpoint.Z) ) )
-		{
-			switch (returnvalue)
-			{
-			case (TOP_SIDE):
-				returnvalue = TOPANDRIGHT_SIDE;
-				break;
-
-			case (BOTTOM_SIDE):
-				returnvalue = BOTTOMANDRIGHT_SIDE;
-				break;
-
-			default:
-				returnvalue = RIGHT_SIDE;
-				break;
-			}
-		}
-	}
-
-
-	return returnvalue;
-}//isOutsideBounds(const class MovingObject* object)
-
 
 void GameWorld::actOn(MovingObject *object)
 {
-	if (!object)
-		return;
-
-	if (!object->getSceneNode() )
+	if (!object || !object->getSceneNode() || !object->getAnimator() )
 		return;
 
 	using irr::core::vector3df;
 
 	//check if the object is outside the Play Area
-	Side side = isOutsideBounds(object);
-	if (side != NO_SIDE)
+	irr::u32 sides = calculateCollisionSides(object);
+
+	if (sides != Sides::None)
 	{
-		if ( (side & LEFT_SIDE) || (side & RIGHT_SIDE) )
-		{
-			vector3df newpos(object->getSceneNode()->getPosition() );
-			if (side & LEFT_SIDE)
-				newpos.X += (m_BBox.MinEdge.X - newpos.X + object->getRadius() );
-			else
-				newpos.X += (m_BBox.MaxEdge.X - newpos.X - object->getRadius() );
+		vector3df newPosition = object->getPosition();
+		vector3df newVelocity = object->getAnimator()->getVelocity();
 
-			if (object->getAnimator() )
-			{
-				//Move the object back inside the boundaries
-				object->getSceneNode()->setPosition(newpos);
-		
-				//flick the x-velocity of the object
-				vector3df newvel(object->getAnimator()->getVelocity() );
-				newvel.X = -1.0f*newvel.X;
-				object->getAnimator()->setVelocity(newvel);
-			}
-		}
-	
-		if ( (side & TOP_SIDE) || (side & BOTTOM_SIDE) )
+		if (sides & Sides::Left)
 		{
-			vector3df newpos(object->getSceneNode()->getPosition() );
-			if (side & BOTTOM_SIDE)
-				newpos.Y += (m_BBox.MinEdge.Y - newpos.Y + object->getRadius() );
-			else
-				newpos.Y += (m_BBox.MaxEdge.Y - newpos.Y - object->getRadius() );
-
-			if (object->getAnimator() )
-			{
-				//Move the object back inside the boundaries
-				object->getSceneNode()->setPosition(newpos);
-		
-				//flick the y-velocity of the object
-				vector3df newvel(object->getAnimator()->getVelocity() );
-				newvel.Y = -1.0f*newvel.Y;
-				object->getAnimator()->setVelocity(newvel);
-			}
+			newPosition.X = -0.5f*m_BoundarySize.Width + object->getRadius();
+			newVelocity.X = -newVelocity.X;
 		}
+
+		if (sides & Sides::Right)
+		{
+			newPosition.X = 0.5f*m_BoundarySize.Width - object->getRadius();
+			newVelocity.X = -newVelocity.X;
+		}
+
+		if (sides & Sides::Top)
+		{
+			newPosition.Y = 0.5f*m_BoundarySize.Height - object->getRadius();
+			newVelocity.Y = -newVelocity.Y;
+		}
+
+		if (sides & Sides::Bottom)
+		{
+			newPosition.Y = -0.5f*m_BoundarySize.Height + object->getRadius();
+			newVelocity.Y = -newVelocity.Y;
+		}
+
+		object->setPosition(newPosition);
+		object->getAnimator()->setVelocity(newVelocity);
 	}
 
-	//don't bother adding forces if there's no animator
 	if (!object->getAnimator() )
 		return;
 
@@ -178,4 +113,62 @@ void GameWorld::actOn(MovingObject *object)
 		dragforce *= dragamount;
 		object->getAnimator()->addForce(dragforce);
 	}
+}
+void GameWorld::setSize(float width, float height)
+{
+	m_BoundarySize.set(width, height);
+}
+
+unsigned int GameWorld::calculateCollisionSides(const MovingObject *object) const
+{
+	unsigned int returnValue = Sides::None;
+
+
+	if (!object || !object->getSceneNode() )
+		return Sides::None;
+
+	using irr::core::vector3df;
+	vector3df testPoint(object->getPosition() );
+	float testRadius = object->getRadius();
+
+	
+	//Check against top edge
+	using irr::core::plane3df;
+	plane3df testPlane;
+	
+	testPlane.setPlane(-Up, 0.5f*m_BoundarySize.Height);	//uses -Up so the plane faces inwards
+	if (irr::core::ISREL3D_FRONT != testPlane.classifyPointRelation(testPoint) 
+		|| testPlane.getDistanceTo(testPoint) <= testRadius)
+	{
+		returnValue |= Sides::Top;
+	}
+	else
+	{	//bottom edge
+		testPlane.setPlane(-Down, 0.5f*m_BoundarySize.Height);
+		if (irr::core::ISREL3D_FRONT != testPlane.classifyPointRelation(testPoint) 
+			|| testPlane.getDistanceTo(testPoint) <= testRadius)
+		{
+			returnValue |= Sides::Bottom;
+		}
+	}
+
+	//Check against left edge
+	using irr::core::plane3df;
+	testPlane.setPlane(-Left, 0.5f*m_BoundarySize.Width);
+	if (irr::core::ISREL3D_FRONT != testPlane.classifyPointRelation(testPoint) 
+		|| testPlane.getDistanceTo(testPoint) <= testRadius)
+	{
+		returnValue |= Sides::Left;
+	}
+	else
+	{	//right edge
+		testPlane.setPlane(-Right, 0.5f*m_BoundarySize.Width);
+		if (irr::core::ISREL3D_FRONT != testPlane.classifyPointRelation(testPoint) 
+			|| testPlane.getDistanceTo(testPoint) <= testRadius)
+		{
+			returnValue |= Sides::Right;
+		}
+	}
+
+	return returnValue;
 }
