@@ -20,6 +20,11 @@
 #include "Engine.h"
 #include "irr/scene/PointMassAnimator.h"
 
+class CollisionListener
+{
+public:
+	virtual void collision(class MovingObject* target, class MovingObject* self) = 0;
+};
 
 class MovingObject
 {
@@ -66,6 +71,10 @@ public:
 	///Process collisions with another object
 	virtual void collide(const MovingObject* other, const irr::core::vector3df& collisionvector) = 0;
 
+	//The Listener for collision events
+	CollisionListener *Listener() { return m_CollisionListener; }
+	void SetListener(CollisionListener *listener) { m_CollisionListener = listener; }
+
 protected:
 	///Calculates radius of a bounding sphere from the bounding box
 	void calculateBoundingSphere();
@@ -83,10 +92,14 @@ protected:
 	///Destroys the object's resources ready for deletion
 	void releaseObjects();
 
+private:
+	//sents the collision event to the registered listener
+	void broadcastCollision(MovingObject* target);
+
 protected:
 	irr::scene::PointMassAnimator* m_MoveAnimator;
 	irr::scene::ISceneNode* m_SceneNode;
 	MovingObject*	m_LastCollider;
-
 	float m_Radius;
+	CollisionListener *m_CollisionListener;
 };

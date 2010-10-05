@@ -17,6 +17,7 @@
 #include "MovingObject.h"
 
 MovingObject::MovingObject(irr::scene::ISceneNode* node, irr::scene::PointMassAnimator* animator)
+: m_CollisionListener(0)
 {
 	if (0 != node)
 	{
@@ -160,15 +161,15 @@ bool MovingObject::testForCollision(MovingObject* other)
 		return false;
 
 	float distance = D - sqrt(T);
+
 	if (distance < 0.0f)
 	{
 		//the objects have already interpenetrated
 
-		//Here be Dragons - use hacked collision detection code
+		//Here be Dragons - using hacked collision response code -->
 
 		//Objects are overlapping
 		float magnitude = 0.0f;
-
 		if (m_MoveAnimator && other->getAnimator() )
 		{
 			vector3df newvelocity(this->getAnimator()->getVelocity() );
@@ -186,8 +187,12 @@ bool MovingObject::testForCollision(MovingObject* other)
 		other->m_LastCollider = this;
 		this->collide(other, -collisionvector);
 		this->m_LastCollider = other;
+		this->broadcastCollision(other);
+		//<-- End Dragons
 		return true;
 	}
+
+	//NOTE: doesn't react to any code below, as teh hacked collision response only responds when the objects have already penetrated
 
 	//get the magnitude of the movement vector
 	float magnitude = movevec.getLength();
@@ -341,4 +346,10 @@ float MovingObject::calcImpulse(const MovingObject *other,  const irr::core::vec
 	float bottom = normal.dotProduct(normal) * (1/this->getAnimator()->getMass() + 1/other->getAnimator()->getMass() );
 
 	return top/bottom;
+}
+
+void MovingObject::broadcastCollision(MovingObject* target)
+{
+	if (!m_CollisionListener) { return; }
+	m_CollisionListener->collision(target, this);
 }
