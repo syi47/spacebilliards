@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\HudString.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\appstate\LoadCore.cpp"
 				>
 			</File>
@@ -280,6 +284,10 @@
 			</File>
 			<File
 				RelativePath=".\src\appstate\Handler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\HudString.h"
 				>
 			</File>
 			<File
