@@ -56,6 +56,7 @@ public:
 		{
 			Irrlicht::getDevice()->getVideoDriver()->beginScene(true, true, irr::video::SColor(255, 0, 0, 0) );
 			Irrlicht::getDevice()->getSceneManager()->drawAll();
+			Irrlicht::getDevice()->getGUIEnvironment()->drawAll();
 			Irrlicht::getDevice()->getVideoDriver()->endScene();
 		}
 	}
