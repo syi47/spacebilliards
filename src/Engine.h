@@ -76,19 +76,20 @@ public:
 private:
 	Irrlicht(void)
 	{
+		using namespace irr::core;
 		//Initialise Irrlicht device
 		m_Device = irr::createDevice(irr::video::EDT_NULL);
 		if (!m_Device)
 			throw "Irrlicht device couldn't be created";
 
 		//retrieve desktop display resolution
-		irr::core::dimension2di res = m_Device->getVideoModeList()->getDesktopResolution();
+		dimension2di res = m_Device->getVideoModeList()->getDesktopResolution();
 
 		//recreate Irrlicht device
 		m_Device->drop();
 		#ifdef _DEBUG
 		//Create windowed device in debug build
-		m_Device = irr::createDevice(irr::video::EDT_DIRECT3D9, res, 32, false, true);
+		m_Device = irr::createDevice(irr::video::EDT_DIRECT3D9, dimension2di(800, 600), 32, false, true);
 		#else
 		//create fullscreen device in release build
 		m_Device = irr::createDevice(irr::video::EDT_DIRECT3D9, res, 32, true, true);
