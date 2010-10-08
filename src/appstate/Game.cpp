@@ -46,14 +46,32 @@ void Game::action()
 	LOG_INFO("Entering game loop...");
 	while (m_GameState != GameState::Finished)
 	{
+		//run the game
+		if (Irrlicht::run() != true)
+		{
+			LOG_INFO("Irrlicht returned false from run()");
+			m_GameState = GameState::Finished;
+			continue;
+		}
+
+		Irrlicht::drawAll();
+
 		switch (m_GameState)
 		{
 		case (GameState::Loading):
 			loadGame();
 			continue;
 
+		case (GameState::MainMenu):
+			mainMenu();
+			continue;
+
 		case (GameState::Playing):
 			runGame();
+			continue;
+
+		case (GameState::Paused):
+			pauseMenu();
 			continue;
 
 		case (GameState::GameOver):
@@ -190,6 +208,11 @@ void Game::loadScene()
 		LOG_INFO("Main Directional Light added");
 	}
 
+	//Register self with the player's collision listener
+	m_Player.getShipObject()->SetListener(this);
+
+	m_Timer.reset(new GameTimer() );
+
 }
 
 void Game::releaseScene()
@@ -217,21 +240,27 @@ void Game::loadGame()
 {
 	//Set the player object as the device's EventReceiver
 	Irrlicht::getDevice()->setEventReceiver(&m_Player);
+	Irrlicht::getDevice()->getGUIEnvironment()->getSkin()->setColor(irr::gui::EGDC_BUTTON_TEXT, irr::video::SColor(255, 255, 255, 255) );
 
 	loadScene();
 
-	m_GameState = GameState::Playing;
+	Irrlicht::getDevice()->getTimer()->stop();
+	m_GameState = GameState::MainMenu;
 }
 
 void Game::runGame()
 {
-	//run the game
-	if (Irrlicht::run() != true)
+	if (Irrlicht::getDevice()->getTimer()->isStopped() )
 	{
-		LOG_INFO("Irrlicht returned false from run()");
-		m_GameState = GameState::Finished;
-		return;
+		Irrlicht::getDevice()->getTimer()->start();
 	}
+	//Update the game time counter
+	std::string timeString = "Time: ";
+	if (m_Timer->getTimeElapsedInMilliseconds() > 0)
+	{
+		timeString.append(m_Timer->getTimeElapsedString() );
+	}
+	m_TimeString.SetText(timeString);
 
 	//Update the player
 	m_Player.Update();
@@ -246,8 +275,6 @@ void Game::runGame()
 
 	collectDeletedObjects();
 
-	Irrlicht::drawAll();
-
 	//Check for all asteroids sunk
 	bool asteroidsleft = false;
 	for (ObjectIterator object = m_Objects.begin(); object != m_Objects.end(); ++object)
@@ -259,7 +286,7 @@ void Game::runGame()
 	}
 	if (!asteroidsleft)
 	{
-		GameTimer::getInstance().stop();
+		m_Timer->stop();
 		showGameOver();
 	}
 
@@ -302,6 +329,29 @@ void Game::collectDeletedObjects()
 			delete (*object);
 			objectIterator = m_Objects.erase(object);
 		}
-	}}
+	}
+}
+
+void Game::collision(MovingObject *target, MovingObject *self)
+{
+	if (self != m_Player.getShipObject() ) { return; }
+	if (target->getType() == ObjectType::Asteroid)
+	{
+		m_Timer->start();
+		if (m_Player.getShipObject()->Listener() == this)
+		{
+			m_Player.getShipObject()->SetListener(0);	//remove self as the listener
+		}
+	}
+}
+
+void Game::mainMenu()
+{
+	m_GameState = GameState::Playing;
+}
+
+void Game::pauseMenu()
+{
+}
 
 }//namespace appstate

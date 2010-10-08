@@ -22,6 +22,9 @@
 #include <vector>
 #include "../Engine.h"
 #include "IAppState.h"
+#include "../HudString.h"
+
+class GameTimer;
 
 
 namespace appstate
@@ -38,13 +41,15 @@ namespace GameState
 	enum Enum
 	{
 		Loading,
+		MainMenu,
 		Playing,
+		Paused,
 		GameOver,
 		Finished
 	};
 }
 
-class Game : public IAppState
+class Game : public IAppState, CollisionListener
 {
 public:
 	Game(void);
@@ -63,11 +68,17 @@ private:
 
 	void loadGame();
 
+	void mainMenu();
+
 	void runGame();
+
+	void pauseMenu();
 
 	void exitGame();
 
 	void showGameOver();
+
+	void collision(MovingObject *target, MovingObject *self);
 
 private:
 	GameState::Enum m_GameState;
@@ -81,7 +92,11 @@ private:
 	///defines the play area
 	GameWorld* m_PlayArea;
 
+	//Used to time the gameplay
+	std::auto_ptr<GameTimer> m_Timer;
 
+	//Displays the time
+	HudString m_TimeString;
 };
 
 
