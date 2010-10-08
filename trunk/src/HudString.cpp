@@ -45,9 +45,11 @@ void HudString::SetText(const std::string &str)
 	std::copy(m_Text.begin(), m_Text.end(), wideText.begin() );
 
 	releaseSprite();
+	dimension2di clipSize =  Irrlicht::getDevice()->getGUIEnvironment()->getBuiltInFont()->getDimension(wideText.c_str() );
+	clipSize *= 2;	//the values returned by getDimension are too small, hack to double them
 	m_TextControl =  Irrlicht::getDevice()->getGUIEnvironment()->addStaticText(
-		wideText.c_str(), rect<s32>(position2di(),
-		Irrlicht::getDevice()->getGUIEnvironment()->getBuiltInFont()->getDimension(wideText.c_str() ) ) );
+		wideText.c_str(), rect<s32>(position2di(), clipSize) );
+	m_TextControl->setOverrideColor(irr::video::SColor(255, 255, 255, 255) );
 }
 
 void HudString::releaseSprite()
