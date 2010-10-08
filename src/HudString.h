@@ -18,6 +18,15 @@
 #include "Engine.h"
 #include <memory>
 
+namespace HudFont
+{
+	enum Enum
+	{
+		Default = 0,
+		Small,
+		Large,
+	};
+};
 
 class HudString
 {
@@ -29,13 +38,16 @@ public:
 	std::string Text() { return m_Text; }
 	void SetText(const std::string& str);
 
-	
+	HudFont::Enum Font() { return m_FontType; }
+	void SetFont(HudFont::Enum hudFont);
 
 private:
 	void releaseSprite();
+	static irr::gui::IGUIFont* getLargeFont();
+	static irr::gui::IGUIFont* getSmallFont();
 
 private:
 	std::string m_Text;
 	irr::gui::IGUIStaticText* m_TextControl;
-
+	HudFont::Enum m_FontType;
 };
