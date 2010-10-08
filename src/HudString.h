@@ -29,6 +29,8 @@ public:
 	std::string Text() { return m_Text; }
 	void SetText(const std::string& str);
 
+	
+
 private:
 	void releaseSprite();
 
