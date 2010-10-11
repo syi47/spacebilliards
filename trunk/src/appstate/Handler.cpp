@@ -18,7 +18,6 @@
 
 #include "IAppState.h"
 #include "Game.h"
-#include "Menu.h"
 #include "LoadCore.h"
 
 namespace appstate
@@ -60,9 +59,6 @@ IAppState* Handler::createApplicationState(ApplicationState::Enum state)
 	{
 	case (ApplicationState::LoadCore):
 		return new LoadCore();
-
-	case (ApplicationState::MainMenu):
-		return new Menu();
 
 	case (ApplicationState::InGame):
 		return new Game();

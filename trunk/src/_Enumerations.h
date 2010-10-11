@@ -22,7 +22,6 @@ namespace appstate
 		enum Enum
 		{
 			LoadCore,
-			MainMenu,
 			InGame,
 			Exit
 		};
