@@ -41,7 +41,7 @@ void LoadCore::action()
 	//seed rand() with current time
 	srand(Irrlicht::getDevice()->getTimer()->getRealTime() );
 
-	this->SetNextState(ApplicationState::MainMenu);
+	this->SetNextState(ApplicationState::InGame);
 }
 
 

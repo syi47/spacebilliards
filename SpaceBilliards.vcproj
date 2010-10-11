@@ -221,7 +221,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\appstate\Menu.cpp"
+				RelativePath=".\src\MainMenu.cpp"
 				>
 			</File>
 			<File
@@ -299,7 +299,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\appstate\Menu.h"
+				RelativePath=".\src\MainMenu.h"
 				>
 			</File>
 			<File
