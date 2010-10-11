@@ -1,4 +1,4 @@
-/*   Copyright 2009 T. Phillip Johnson
+/*   Copyright 2009 Tatham Johnson
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
