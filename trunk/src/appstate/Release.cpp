@@ -13,17 +13,28 @@
    limitations under the License.
 */
 
-#pragma once
+#include "Release.h"
+#include "../Engine.h"
+#include "fmod.h"
 
 namespace appstate
 {
-	namespace ApplicationState
-	{
-		enum Enum
-		{
-			LoadCore,
-			InGame,
-			Exit
-		};
-	}
+
+Release::Release(void)
+{
 }
+
+Release::~Release(void)
+{
+}
+
+void Release::action()
+{
+	//Clean up FMOD
+	LOG_INFO("Closing FMOD");
+	FSOUND_Close();
+
+	this->SetNextState(ApplicationState::Exit);
+}
+
+}//namespace appstate

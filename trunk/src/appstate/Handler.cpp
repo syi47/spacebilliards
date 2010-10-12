@@ -19,6 +19,7 @@
 #include "IAppState.h"
 #include "Game.h"
 #include "LoadCore.h"
+#include "Release.h"
 
 namespace appstate
 {
@@ -62,6 +63,9 @@ IAppState* Handler::createApplicationState(ApplicationState::Enum state)
 
 	case (ApplicationState::InGame):
 		return new Game();
+
+	case (ApplicationState::Release):
+		return new Release();
 
 	default:
 		return 0;

@@ -24,7 +24,6 @@
 #include <fstream>
 
 #include "appstate/Handler.h"
-#include "_Enumerations.h"
 #include "Engine.h"
 
  //Used to define the size of the developer console

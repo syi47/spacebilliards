@@ -31,7 +31,10 @@ Menu::~Menu(void)
 
 void Menu::addMenuItem(IMenuItem* item)
 {
-	m_MenuItems.push_back(item);
+	if (item != 0)
+	{
+		m_MenuItems.push_back(item);
+	}
 }
 
 bool Menu::OnEvent(const irr::SEvent& eventdata)
@@ -68,9 +71,9 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 		}
 
 		default:
-			return false;
+			return false;	//unhandled
 		}
-		return true;
+		return true;	//totally handled the fuck out of that shit
 	}
-	return false;
+	return false;	//unhandled
 }
