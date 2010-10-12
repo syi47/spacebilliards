@@ -17,12 +17,14 @@
 #include <list>
 #include "HudString.h"
 
+///An interface class for using and selecting MenuItems
 class IMenuItem
 {
 public:
-	virtual void select() = 0;
+	virtual void select() = 0;	///< Selects the MenuItem and calls its function
 };
 
+///The templated class that holds the meat of the MenuItem
 template <typename T>
 class MenuItem : public IMenuItem
 {
@@ -62,8 +64,8 @@ public:
 	void addMenuItem(IMenuItem* item);
 
 private:
-	int m_SelectedMenuItem;
+	HudString m_SelectCharacterString;
 	std::list<IMenuItem*> m_MenuItems;
 	typedef std::list<IMenuItem*>::iterator MenuItemIterator;
-	MenuItemIterator m_SelectedIterator;
+	MenuItemIterator m_SelectedMenuItem;
 };
