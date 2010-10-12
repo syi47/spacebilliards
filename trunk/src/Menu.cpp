@@ -16,20 +16,22 @@
 #include "Menu.h"
 
 Menu::Menu(void)
-: m_SelectedMenuItem(0)
+: m_SelectedMenuItem(0),
+m_SelectedIterator(m_MenuItems.begin() )
 {
 }
 
 Menu::~Menu(void)
 {
+	for (MenuItemIterator it = m_MenuItems.begin(); it != m_MenuItems.end(); it++)
+	{
+		delete (*it);
+	}
 }
 
-void Menu::initMenuItems()
+void Menu::addMenuItem(IMenuItem* item)
 {
-	for (unsigned int i = 0; i < m_MenuItems.size(); ++i)
-	{
-		m_MenuItems.push_back(HudString("MenuItem") );
-	}
+	m_MenuItems.push_back(item);
 }
 
 bool Menu::OnEvent(const irr::SEvent& eventdata)
