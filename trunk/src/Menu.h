@@ -67,5 +67,5 @@ private:
 	HudString m_SelectCharacterString;
 	std::list<IMenuItem*> m_MenuItems;
 	typedef std::list<IMenuItem*>::iterator MenuItemIterator;
-	MenuItemIterator m_SelectedMenuItem;
+	MenuItemIterator m_CurrentMenuItem;
 };
