@@ -19,18 +19,13 @@
 using namespace irr;
 using namespace irr::core;
 
-HudString::HudString(void)
-: m_TextControl(0),
-m_FontType(HudFont::Small)
-{
-	SetText("");
-}
 
-HudString::HudString(const std::string& str)
+HudString::HudString(const std::string& str, const irr::core::position2di& pos, HudFont::Enum font)
 : m_TextControl(0),
-m_FontType(HudFont::Small)
+m_FontType(font)
 {
 	SetText(str);
+	SetPosition(pos);
 }
 
 HudString::~HudString(void)
