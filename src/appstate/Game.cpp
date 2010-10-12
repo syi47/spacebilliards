@@ -18,6 +18,7 @@
 #include "fmod.h"
 #include "../ObjectFactory.h"
 #include "../GameTimer.h"
+#include "../Menu.h"
 
 #pragma comment(lib, "irrlicht.lib")
 #pragma comment(lib, "fmodvc.lib")
@@ -30,7 +31,8 @@ namespace appstate
 
 
 Game::Game(void)
-: m_GameState(GameState::Loading)
+: m_GameState(GameState::Loading),
+m_MainMenu(0)
 {
 }
 
@@ -237,7 +239,6 @@ void Game::releaseScene()
 void Game::loadGame()
 {
 	//Set the player object as the device's EventReceiver
-	Irrlicht::getDevice()->setEventReceiver(&m_Player);
 	Irrlicht::getDevice()->getGUIEnvironment()->getSkin()->setColor(irr::gui::EGDC_BUTTON_TEXT, irr::video::SColor(255, 255, 255, 255) );
 
 	loadScene();
@@ -248,6 +249,7 @@ void Game::loadGame()
 
 void Game::runGame()
 {
+	Irrlicht::getDevice()->setEventReceiver(&m_Player);
 	if (Irrlicht::getDevice()->getTimer()->isStopped() )
 	{
 		Irrlicht::getDevice()->getTimer()->start();
@@ -339,11 +341,29 @@ void Game::collision(MovingObject *target, MovingObject *self)
 
 void Game::mainMenu()
 {
-	m_GameState = GameState::Playing;
+	if (0 == m_MainMenu)
+	{
+		//initialise the menu
+		m_MainMenu = new Menu();
+		m_MainMenu->addMenuItem(new MenuItem<Game>("Play", this, &Game::menu_Play) );
+		m_MainMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
+		m_MainMenu->setCurrentItem("Play");
+	}
+	Irrlicht::getDevice()->setEventReceiver(m_MainMenu);
 }
 
 void Game::pauseMenu()
 {
+}
+
+void Game::menu_Play()
+{
+	m_GameState = GameState::Playing;
+	if (m_MainMenu)
+	{
+		delete m_MainMenu;
+		m_MainMenu = 0;
+	}
 }
 
 }//namespace appstate
