@@ -31,8 +31,9 @@ namespace HudFont
 class HudString
 {
 public:
-	HudString(void);
-	HudString(const std::string& str);
+	HudString(const std::string& str = std::string(),
+		const irr::core::position2di& pos = irr::core::position2di(),
+		HudFont::Enum font = HudFont::Small);
 	~HudString(void);
 
 	std::string Text() { return m_Text; }
@@ -40,6 +41,8 @@ public:
 
 	HudFont::Enum Font() { return m_FontType; }
 	void SetFont(HudFont::Enum hudFont);
+
+	void SetPosition(const irr::core::position2di& value) { m_TextControl->move(value); }
 
 private:
 	void releaseSprite();
