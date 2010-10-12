@@ -16,7 +16,7 @@
 #include "Menu.h"
 
 Menu::Menu(void)
-: m_SelectedMenuItem(m_MenuItems.begin() ),
+: m_CurrentMenuItem(m_MenuItems.begin() ),
 m_SelectCharacterString(">")
 {
 }
@@ -44,26 +44,26 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 		case irr::KEY_UP:
 		case irr::KEY_LEFT:
 		{
-			if (m_SelectedMenuItem == m_MenuItems.begin() )
+			if (m_CurrentMenuItem == m_MenuItems.begin() )
 			{
-				m_SelectedMenuItem = m_MenuItems.end();
+				m_CurrentMenuItem = m_MenuItems.end();
 			}
-			m_SelectedMenuItem--;
+			m_CurrentMenuItem--;
 			break;
 		}
 
 		case irr::KEY_DOWN:
 		case irr::KEY_RIGHT:
 		{
-			m_SelectedMenuItem++;
-			if (m_SelectedMenuItem == m_MenuItems.end()) { m_SelectedMenuItem = m_MenuItems.begin(); }
+			m_CurrentMenuItem++;
+			if (m_CurrentMenuItem == m_MenuItems.end()) { m_CurrentMenuItem = m_MenuItems.begin(); }
 			break;
 		}
 
 		case irr::KEY_SPACE:
 		case irr::KEY_RETURN:
 		{
-			(*m_SelectedMenuItem)->select();
+			(*m_CurrentMenuItem)->select();
 			break;
 		}
 
