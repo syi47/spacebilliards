@@ -15,6 +15,8 @@
 
 #include "Menu.h"
 
+using namespace irr::core;
+
 Menu::Menu(void)
 : m_CurrentMenuItem(m_MenuItems.begin() ),
 m_SelectCharacterString(">")
@@ -34,6 +36,7 @@ void Menu::addMenuItem(IMenuItem* item)
 	if (item != 0)
 	{
 		m_MenuItems.push_back(item);
+		layoutMenuItems();
 	}
 }
 
@@ -76,4 +79,32 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 		return true;	//totally handled the fuck out of that shit
 	}
 	return false;	//unhandled
+}
+
+
+void Menu::layoutMenuItems()
+{
+	dimension2di screenSize = Irrlicht::getDevice()->getVideoDriver()->getScreenSize();
+	int centreX = screenSize.Width / 2;
+	int paddingY = screenSize.Height / (m_MenuItems.size()+2);
+	
+	int nextX = centreX;
+	int nextY = paddingY;
+	for (MenuItemIterator item = m_MenuItems.begin(); item != m_MenuItems.end(); item++)
+	{
+		(*item)->string().SetPosition(position2di(nextX, nextY) );
+		nextY += paddingY;
+	}
+
+}
+
+void Menu::setCurrentItem(const std::string &name)
+{
+	for (MenuItemIterator item = m_MenuItems.begin(); item != m_MenuItems.end(); item++)
+	{
+		if ( (*item)->string().Text() == name)
+		{
+			m_CurrentMenuItem = item;
+		}
+	}
 }
