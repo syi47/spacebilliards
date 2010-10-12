@@ -14,11 +14,12 @@
 */
 
 #pragma once
-#include <vector>
+#include <list>
 #include "HudString.h"
 
 class IMenuItem
 {
+public:
 	virtual void select() = 0;
 };
 
@@ -27,10 +28,17 @@ class MenuItem : public IMenuItem
 {
 public:
 	typedef void (T::*selectFunction)(void);
-	MenuItem(T* object, selectFunction function) : m_Object(object), m_Function(function) {}
+	MenuItem(std::string name, T* object, selectFunction function)
+		: m_String(name), m_Object(object), m_Function(function)
+	{
+		m_String.SetFont(HudFont::Large);
+	}
 	void select() { m_Object->*m_Function(); }
+	const std::string& name() { return m_String.Text(); }
+	void setName(const std::string& value) { m_String.SetText(value); }
 
 private:
+	HudString m_String;
 	T* m_Object;
 	selectFunction m_Function;
 };
@@ -44,10 +52,18 @@ public:
 	///Receives events from the user and reacts to them
 	bool OnEvent(const irr::SEvent& event);
 
-private:
-	void initMenuItems();
+	///Adds a new menu item to the menu
+	/** Syntax: addMenuItem(new MenuItem<CLASS>(name, pClass, pFunc) );
+		Where CLASS is the type of the class that own the select funtion, pClass is a pointer
+		to an instance of that type of class, and pFunc is the name of the function that will be
+		called on that instance when the menu item is selected.
+		Note: The order the MenuItems are displayed is the same order they are added.
+	**/
+	void addMenuItem(IMenuItem* item);
 
 private:
 	int m_SelectedMenuItem;
-	std::vector<HudString> m_MenuItems;
+	std::list<IMenuItem*> m_MenuItems;
+	typedef std::list<IMenuItem*>::iterator MenuItemIterator;
+	MenuItemIterator m_SelectedIterator;
 };
