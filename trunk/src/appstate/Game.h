@@ -25,7 +25,7 @@
 #include "../HudString.h"
 
 class GameTimer;
-
+class Menu;
 
 namespace appstate
 {
@@ -80,6 +80,9 @@ private:
 
 	void collision(MovingObject *target, MovingObject *self);
 
+	void menu_Play();
+	void menu_Exit() { m_GameState = GameState::Finished; }
+
 private:
 	GameState::Enum m_GameState;
 
@@ -94,6 +97,8 @@ private:
 
 	//Used to time the gameplay
 	std::auto_ptr<GameTimer> m_Timer;
+
+	Menu *m_MainMenu;
 
 	//Displays the time
 	HudString m_TimeString;
