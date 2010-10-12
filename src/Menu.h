@@ -22,6 +22,7 @@ class IMenuItem
 {
 public:
 	virtual void select() = 0;	///< Selects the MenuItem and calls its function
+	virtual HudString& string() = 0;
 };
 
 ///The templated class that holds the meat of the MenuItem
@@ -35,9 +36,8 @@ public:
 	{
 		m_String.SetFont(HudFont::Large);
 	}
-	void select() { m_Object->*m_Function(); }
-	const std::string& name() { return m_String.Text(); }
-	void setName(const std::string& value) { m_String.SetText(value); }
+	void select() { (m_Object->*m_Function)(); }
+	HudString& string() { return m_String; }
 
 private:
 	HudString m_String;
@@ -45,7 +45,7 @@ private:
 	selectFunction m_Function;
 };
 
-class Menu
+class Menu : public irr::IEventReceiver
 {
 public:
 	Menu(void);
@@ -62,6 +62,12 @@ public:
 		The MenuItems are displayed is the same order they are added. They are deleted when the Menu is destroyed
 	**/
 	void addMenuItem(IMenuItem* item);
+
+	///Sets the current item to be the item with the given name, if it exists
+	void setCurrentItem(const std::string& name);
+
+private:
+	void layoutMenuItems();
 
 private:
 	HudString m_SelectCharacterString;
