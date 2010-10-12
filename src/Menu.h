@@ -59,7 +59,7 @@ public:
 		Where CLASS is the type of the class that own the select funtion, pClass is a pointer
 		to an instance of that type of class, and pFunc is the name of the function that will be
 		called on that instance when the menu item is selected.
-		Note: The order the MenuItems are displayed is the same order they are added.
+		The MenuItems are displayed is the same order they are added. They are deleted when the Menu is destroyed
 	**/
 	void addMenuItem(IMenuItem* item);
 

@@ -32,9 +32,6 @@ namespace appstate
 Game::Game(void)
 : m_GameState(GameState::Loading)
 {
-	//Initialise FMOD
-	LOG_INFO("Initialising FMOD");
-	FSOUND_Init(44100, 32, 0);
 }
 
 Game::~Game(void)
@@ -81,6 +78,7 @@ void Game::action()
 	}
 	LOG_INFO("...Exiting game loop");
 
+	SetNextState(ApplicationState::Release);
 	exitGame();
 }
 
@@ -294,17 +292,11 @@ void Game::runGame()
 
 void Game::exitGame()
 {
-	//clean up here
-
-
 	releaseScene();
 
 	//Remove the player as the Event Receiver before deletion
 	Irrlicht::getDevice()->setEventReceiver(0);
 
-	//Clean up FMOD
-	LOG_INFO("Closing FMOD");
-	FSOUND_Close();
 }
 
 void Game::showGameOver()

@@ -15,8 +15,16 @@
 
 
 #pragma once
-
-#include "../_Enumerations.h"
+namespace ApplicationState
+{
+	enum Enum
+	{
+		LoadCore,
+		InGame,
+		Release,
+		Exit
+	};
+};
 
 namespace appstate
 {

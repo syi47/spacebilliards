@@ -13,30 +13,20 @@
    limitations under the License.
 */
 
-
 #pragma once
-
 #include "IAppState.h"
 
 namespace appstate
 {
 
-class Handler
+class Release :
+	public IAppState
 {
 public:
-	Handler(ApplicationState::Enum firstState = ApplicationState::LoadCore, ApplicationState::Enum exitState = ApplicationState::Exit);
-	~Handler(void);
+	Release(void);
+	virtual ~Release(void);
 
-	void handle();
-
-private:
-	ApplicationState::Enum m_NextState;
-
-	ApplicationState::Enum m_ExitState;
-
-	///Factory method to create the next application state object from an enum value
-	class IAppState* createApplicationState(ApplicationState::Enum state);
-
+	void action();
 };
 
-}//namespace appstate
+} //namespace appstate

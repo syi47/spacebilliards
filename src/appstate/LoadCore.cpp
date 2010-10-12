@@ -14,8 +14,8 @@
 */
 
 #include "LoadCore.h"
-
 #include "../Engine.h"
+#include "fmod.h"
 
 
 namespace appstate
@@ -32,6 +32,10 @@ LoadCore::~LoadCore(void)
 
 void LoadCore::action()
 {
+	//Initialise FMOD
+	LOG_INFO("Initialising FMOD");
+	FSOUND_Init(44100, 32, 0);
+
 	//Set the window caption
 	Irrlicht::getDevice()->setWindowCaption(L"Space Billiards");
 

@@ -244,16 +244,16 @@
 				RelativePath=".\src\irr\scene\PointMassAnimator.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\appstate\Release.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\src\_Enumerations.h"
-				>
-			</File>
 			<File
 				RelativePath=".\src\Asteroid.h"
 				>
@@ -324,6 +324,10 @@
 			</File>
 			<File
 				RelativePath=".\src\irr\scene\PointMassAnimator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\appstate\Release.h"
 				>
 			</File>
 		</Filter>
