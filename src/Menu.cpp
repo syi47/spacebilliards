@@ -16,8 +16,8 @@
 #include "Menu.h"
 
 Menu::Menu(void)
-: m_SelectedMenuItem(0),
-m_SelectedIterator(m_MenuItems.begin() )
+: m_SelectedMenuItem(m_MenuItems.begin() ),
+m_SelectCharacterString(">")
 {
 }
 
@@ -36,49 +36,41 @@ void Menu::addMenuItem(IMenuItem* item)
 
 bool Menu::OnEvent(const irr::SEvent& eventdata)
 {
-	bool handled = false;
 	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT)
 	{
-		int selectedMenuItem = static_cast<int>(m_SelectedMenuItem);
 		//Process keyboard event
 		switch(eventdata.KeyInput.Key)
 		{
 		case irr::KEY_UP:
 		case irr::KEY_LEFT:
 		{
-			--selectedMenuItem;
+			if (m_SelectedMenuItem == m_MenuItems.begin() )
+			{
+				m_SelectedMenuItem = m_MenuItems.end();
+			}
+			m_SelectedMenuItem--;
 			break;
 		}
 
 		case irr::KEY_DOWN:
 		case irr::KEY_RIGHT:
 		{
-			++selectedMenuItem;
+			m_SelectedMenuItem++;
+			if (m_SelectedMenuItem == m_MenuItems.end()) { m_SelectedMenuItem = m_MenuItems.begin(); }
 			break;
 		}
 
 		case irr::KEY_SPACE:
 		case irr::KEY_RETURN:
 		{
-			//TODO: activate current Menu selection
+			(*m_SelectedMenuItem)->select();
 			break;
 		}
 
 		default:
-			handled = false;
-			return handled;
+			return false;
 		}
-		if (selectedMenuItem < 0)
-		{
-			selectedMenuItem = m_MenuItems.size() + selectedMenuItem;
-		}
-		else if (selectedMenuItem >= static_cast<int>(m_MenuItems.size() ) )	//casting as int because it's unsigned - not an issue because of the compare to zero test above
-		{
-			selectedMenuItem = m_MenuItems.size();
-		}
-		else {}
-		m_SelectedMenuItem = selectedMenuItem;
-		handled = true;
+		return true;
 	}
-	return (handled);
+	return false;
 }
