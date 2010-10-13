@@ -270,4 +270,6 @@ void Player::releasePlayerObjects()
 void Player::clearInput()
 {
 	memset(&m_Input, 0, sizeof(PlayerInput) );
+	FSOUND_StopSound(m_ThrustLoopChannel);
+
 }
