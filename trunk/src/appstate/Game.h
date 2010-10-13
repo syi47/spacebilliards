@@ -91,6 +91,7 @@ private:
 
 	void pause();
 	void resume();
+	void restart();
 
 private:
 	GameState::Enum m_GameState;
