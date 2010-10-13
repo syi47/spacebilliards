@@ -81,8 +81,15 @@ private:
 
 	void collision(MovingObject *target, MovingObject *self);
 
-	void menu_Play();
 	void menu_Exit() { m_GameState = GameState::Finished; }
+	void menu_Play();
+	void menu_Resume();
+	void menu_Restart();
+
+	void removeMenus();
+
+	void pause();
+	void resume();
 
 private:
 	GameState::Enum m_GameState;
@@ -100,6 +107,7 @@ private:
 	std::auto_ptr<GameTimer> m_Timer;
 
 	Menu *m_MainMenu;
+	Menu *m_PauseMenu;
 
 	//Displays the time
 	HudString m_TimeString;

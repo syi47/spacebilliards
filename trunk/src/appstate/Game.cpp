@@ -32,7 +32,8 @@ namespace appstate
 
 Game::Game(void)
 : m_GameState(GameState::Loading),
-m_MainMenu(0)
+m_MainMenu(0),
+m_PauseMenu(0)
 {
 }
 
@@ -243,17 +244,13 @@ void Game::loadGame()
 
 	loadScene();
 
-	Irrlicht::getDevice()->getTimer()->stop();
 	m_GameState = GameState::MainMenu;
 }
 
 void Game::runGame()
 {
 	Irrlicht::getDevice()->setEventReceiver(this);
-	if (Irrlicht::getDevice()->getTimer()->isStopped() )
-	{
-		Irrlicht::getDevice()->getTimer()->start();
-	}
+	resume();
 	//Update the game time counter
 	std::string timeString = "Time: ";
 	if (m_Timer->getTimeElapsedInMilliseconds() > 0)
@@ -341,6 +338,7 @@ void Game::collision(MovingObject *target, MovingObject *self)
 
 void Game::mainMenu()
 {
+	pause();
 	if (0 == m_MainMenu)
 	{
 		//initialise the menu
@@ -355,12 +353,38 @@ void Game::mainMenu()
 
 void Game::pauseMenu()
 {
-	mainMenu();
+	pause();
+	if (0 == m_PauseMenu)
+	{
+		m_PauseMenu = new Menu();
+		m_PauseMenu->addMenuItem(new MenuItem<Game>("Resume", this, &Game::menu_Resume) );
+		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Play) );
+		m_PauseMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
+		m_PauseMenu->setCurrentItem("Resume");
+	}
+	m_PauseMenu->layoutMenuItems();
+	Irrlicht::getDevice()->setEventReceiver(m_PauseMenu);
 }
 
 void Game::menu_Play()
 {
 	m_GameState = GameState::Playing;
+	removeMenus();
+}
+
+void Game::menu_Resume()
+{
+	resume();
+	removeMenus();
+}
+
+void Game::removeMenus()
+{
+	if (m_PauseMenu)
+	{
+		delete m_PauseMenu;
+		m_PauseMenu = 0;
+	}
 	if (m_MainMenu)
 	{
 		delete m_MainMenu;
@@ -370,7 +394,46 @@ void Game::menu_Play()
 
 bool Game::OnEvent(const irr::SEvent &event)
 {
+	if (event.EventType == irr::EET_KEY_INPUT_EVENT
+		&& event.KeyInput.PressedDown
+		&& event.KeyInput.Key == irr::KEY_ESCAPE)
+	{
+		if (m_GameState == GameState::Playing)
+		{
+			pause();
+		}
+		else if (GameState::Paused == m_GameState)
+		{
+			resume();
+		}
+	}
+	
 	return m_Player.OnEvent(event);
+}
+
+void Game::pause()
+{
+	if (!Irrlicht::getDevice()->getTimer()->isStopped() )
+	{
+		Irrlicht::getDevice()->getTimer()->stop();
+	}
+	if (GameState::Playing == m_GameState)
+	{
+		m_GameState = GameState::Paused;
+		m_Player.clearInput();
+	}
+}
+
+void Game::resume()
+{
+	if (Irrlicht::getDevice()->getTimer()->isStopped() )
+	{
+		Irrlicht::getDevice()->getTimer()->start();
+	}
+	if (GameState::Paused == m_GameState)
+	{
+		m_GameState = GameState::Playing;
+	}
 }
 
 }//namespace appstate
