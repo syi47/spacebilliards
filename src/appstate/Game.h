@@ -86,6 +86,7 @@ private:
 	void menu_Instructions() {};
 	void menu_Resume();
 	void menu_Restart();
+	void menu_MainMenu();
 
 	void removeMenus();
 
@@ -110,6 +111,7 @@ private:
 
 	Menu *m_MainMenu;
 	Menu *m_PauseMenu;
+	Menu *m_EndGameMenu;
 
 	//Displays the time
 	HudString m_TimeString;
