@@ -283,7 +283,6 @@ void Game::runGame()
 	}
 	if (!asteroidsleft)
 	{
-		m_Timer->stop();
 		showGameOver();
 	}
 
@@ -300,9 +299,9 @@ void Game::exitGame()
 
 void Game::showGameOver()
 {
-	//TODO: stop the timer
-
-	m_GameState = GameState::Finished;
+	m_Timer->stop();
+	releaseScene();
+	loadScene();
 }
 
 void Game::collectDeletedObjects()
@@ -343,7 +342,9 @@ void Game::mainMenu()
 	{
 		//initialise the menu
 		m_MainMenu = new Menu();
+		m_MainMenu->setTitleImage("Title.png");
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Play", this, &Game::menu_Play) );
+		m_MainMenu->addMenuItem(new MenuItem<Game>("Instructions", this, &Game::menu_Instructions) );
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
 		m_MainMenu->setCurrentItem("Play");
 	}
@@ -357,6 +358,7 @@ void Game::pauseMenu()
 	if (0 == m_PauseMenu)
 	{
 		m_PauseMenu = new Menu();
+		m_PauseMenu->setTitleImage("Paused.png");
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Resume", this, &Game::menu_Resume) );
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Play) );
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
@@ -435,5 +437,6 @@ void Game::resume()
 		m_GameState = GameState::Playing;
 	}
 }
+
 
 }//namespace appstate

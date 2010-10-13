@@ -83,6 +83,7 @@ private:
 
 	void menu_Exit() { m_GameState = GameState::Finished; }
 	void menu_Play();
+	void menu_Instructions() {};
 	void menu_Resume();
 	void menu_Restart();
 

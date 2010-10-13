@@ -19,7 +19,8 @@ using namespace irr::core;
 
 Menu::Menu(void)
 : m_CurrentMenuItem(m_MenuItems.begin() ),
-m_SelectCharacterString(">", position2di(), HudFont::Large)
+m_SelectCharacterString(">", position2di(), HudFont::Large),
+m_TitleImage(0)
 {
 }
 
@@ -28,6 +29,10 @@ Menu::~Menu(void)
 	for (MenuItemIterator it = m_MenuItems.begin(); it != m_MenuItems.end(); it++)
 	{
 		delete (*it);
+	}
+	if (m_TitleImage)
+	{
+		m_TitleImage->remove();
 	}
 }
 
@@ -86,11 +91,18 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 void Menu::layoutMenuItems()
 {
 	dimension2di screenSize = Irrlicht::getDevice()->getVideoDriver()->getScreenSize();
-	int centreX = screenSize.Width / 2;
-	int paddingY = screenSize.Height / (m_MenuItems.size()+2);
+	int renderX = screenSize.Width / 3;
+
+	int titleHeight = 0;
+	if (m_TitleImage)
+	{
+		titleHeight = m_TitleImage->getAbsoluteClippingRect().getHeight();
+	}
+
+	int paddingY = (screenSize.Height - titleHeight) / (m_MenuItems.size()+1);
 	
-	int nextX = centreX;
-	int nextY = paddingY;
+	int nextX = renderX;
+	int nextY = titleHeight;
 	for (MenuItemIterator item = m_MenuItems.begin(); item != m_MenuItems.end(); item++)
 	{
 		(*item)->string().SetPosition(position2di(nextX, nextY) );
@@ -111,5 +123,20 @@ void Menu::setCurrentItem(const std::string &name)
 		{
 			m_CurrentMenuItem = item;
 		}
+	}
+}
+
+void Menu::setTitleImage(const std::string& fileName)
+{
+	if (m_TitleImage)
+	{
+		m_TitleImage->remove();
+		m_TitleImage = 0;
+	}
+
+	if (fileName.length() > 0)
+	{
+		irr::video::ITexture *title = Irrlicht::getDevice()->getVideoDriver()->getTexture(fileName.c_str() );
+		m_TitleImage = Irrlicht::getDevice()->getGUIEnvironment()->addImage(title, position2di() );
 	}
 }
