@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "../MovingObject.h"
+//#include "../MovingObject.h"
 #include "../Player.h"
 #include "../GameWorld.h"
 #include <vector>
@@ -26,6 +26,7 @@
 
 class GameTimer;
 class Menu;
+class MovingObject;
 
 namespace appstate
 {
@@ -49,7 +50,7 @@ namespace GameState
 	};
 }
 
-class Game : public IAppState, CollisionListener, irr::IEventReceiver
+class Game : public IAppState, irr::IEventReceiver
 {
 public:
 	Game(void);
@@ -78,8 +79,6 @@ private:
 	void exitGame();
 
 	void showGameOver();
-
-	void collision(MovingObject *target, MovingObject *self);
 
 	void menu_Exit() { m_GameState = GameState::Finished; }
 	void menu_Play();
@@ -112,6 +111,8 @@ private:
 	Menu *m_MainMenu;
 	Menu *m_PauseMenu;
 	Menu *m_EndGameMenu;
+
+	HudString *m_Instructions;
 
 	//Displays the time
 	HudString m_TimeString;
