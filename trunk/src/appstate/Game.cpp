@@ -26,6 +26,8 @@
 
 typedef std::vector<MovingObject*>::iterator ObjectIterator;
 
+using namespace irr::core;
+
 namespace appstate
 {
 
@@ -33,7 +35,8 @@ namespace appstate
 Game::Game(void)
 : m_GameState(GameState::Loading),
 m_MainMenu(0),
-m_PauseMenu(0)
+m_PauseMenu(0),
+m_EndGameMenu(0)
 {
 }
 
@@ -297,13 +300,6 @@ void Game::exitGame()
 
 }
 
-void Game::showGameOver()
-{
-	m_Timer->stop();
-	releaseScene();
-	loadScene();
-}
-
 void Game::collectDeletedObjects()
 {
 	//check the objects for deletion
@@ -361,11 +357,26 @@ void Game::pauseMenu()
 		m_PauseMenu->setTitleImage("Paused.png");
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Resume", this, &Game::menu_Resume) );
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Restart) );
-		m_PauseMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
+		m_PauseMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
 		m_PauseMenu->setCurrentItem("Resume");
 	}
 	m_PauseMenu->layoutMenuItems();
 	Irrlicht::getDevice()->setEventReceiver(m_PauseMenu);
+}
+
+void Game::showGameOver()
+{
+	pause();
+	if (0 == m_EndGameMenu)
+	{
+		m_TimeString.SetFont(HudFont::Large);
+		m_EndGameMenu = new Menu();
+		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Play Again", this, &Game::menu_Restart) );
+		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
+		m_EndGameMenu->setCurrentItem("Play Again");
+	}
+	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
+	m_EndGameMenu->layoutMenuItems();
 }
 
 void Game::menu_Play()
@@ -386,6 +397,13 @@ void Game::menu_Restart()
 	removeMenus();
 }
 
+void Game::menu_MainMenu()
+{
+	restart();
+	removeMenus();
+	m_GameState = GameState::MainMenu;
+}
+
 void Game::removeMenus()
 {
 	if (m_PauseMenu)
@@ -397,6 +415,11 @@ void Game::removeMenus()
 	{
 		delete m_MainMenu;
 		m_MainMenu = 0;
+	}
+	if (m_EndGameMenu)
+	{
+		delete m_EndGameMenu;
+		m_EndGameMenu = 0;
 	}
 }
 
@@ -415,6 +438,15 @@ bool Game::OnEvent(const irr::SEvent &event)
 			resume();
 		}
 	}
+
+#ifdef _DEBUG
+	if (event.EventType == irr::EET_KEY_INPUT_EVENT
+		&& event.KeyInput.PressedDown
+		&& event.KeyInput.Key == irr::KEY_F4)
+	{
+		m_GameState = GameState::GameOver;
+	}
+#endif
 	
 	return m_Player.OnEvent(event);
 }
@@ -449,6 +481,7 @@ void Game::restart()
 	releaseScene();
 	loadScene();
 	resume();
+	m_GameState = GameState::Playing;
 }
 
 }//namespace appstate
