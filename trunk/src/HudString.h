@@ -42,7 +42,8 @@ public:
 	HudFont::Enum Font() { return m_FontType; }
 	void SetFont(HudFont::Enum hudFont);
 
-	void SetPosition(const irr::core::position2di& value) { m_TextControl->move(value); }
+	const irr::core::position2di& Position() { return m_Position; }
+	void SetPosition(const irr::core::position2di& value);
 
 private:
 	void releaseSprite();
@@ -53,4 +54,5 @@ private:
 	std::string m_Text;
 	irr::gui::IGUIStaticText* m_TextControl;
 	HudFont::Enum m_FontType;
+	irr::core::position2di m_Position;
 };

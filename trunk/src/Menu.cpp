@@ -19,7 +19,7 @@ using namespace irr::core;
 
 Menu::Menu(void)
 : m_CurrentMenuItem(m_MenuItems.begin() ),
-m_SelectCharacterString(">")
+m_SelectCharacterString(">", position2di(), HudFont::Large)
 {
 }
 
@@ -42,7 +42,8 @@ void Menu::addMenuItem(IMenuItem* item)
 
 bool Menu::OnEvent(const irr::SEvent& eventdata)
 {
-	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT)
+	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT
+		&& eventdata.KeyInput.PressedDown)
 	{
 		//Process keyboard event
 		switch(eventdata.KeyInput.Key)
@@ -93,6 +94,10 @@ void Menu::layoutMenuItems()
 	for (MenuItemIterator item = m_MenuItems.begin(); item != m_MenuItems.end(); item++)
 	{
 		(*item)->string().SetPosition(position2di(nextX, nextY) );
+		if (item == m_CurrentMenuItem)
+		{
+			m_SelectCharacterString.SetPosition(position2di(nextX - 50, nextY) );
+		}
 		nextY += paddingY;
 	}
 

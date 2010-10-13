@@ -21,6 +21,7 @@
 class IMenuItem
 {
 public:
+	virtual ~IMenuItem(){};
 	virtual void select() = 0;	///< Selects the MenuItem and calls its function
 	virtual HudString& string() = 0;
 };
@@ -66,8 +67,13 @@ public:
 	///Sets the current item to be the item with the given name, if it exists
 	void setCurrentItem(const std::string& name);
 
-private:
+	///Sets the correct positions of the menu items
+	/** Sets the positions of each menu item based on how many there are and in what order they were added,
+	and also updates the position of the indicator showing the current menu item
+	**/
 	void layoutMenuItems();
+
+private:
 
 private:
 	HudString m_SelectCharacterString;

@@ -49,13 +49,14 @@ namespace GameState
 	};
 }
 
-class Game : public IAppState, CollisionListener
+class Game : public IAppState, CollisionListener, irr::IEventReceiver
 {
 public:
 	Game(void);
 	~Game(void);
 
 	virtual void action();
+	bool OnEvent(const irr::SEvent& event);
 
 private:
 	void checkCollisions();
