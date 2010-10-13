@@ -17,7 +17,6 @@
 #include "MovingObject.h"
 
 MovingObject::MovingObject(irr::scene::ISceneNode* node, irr::scene::PointMassAnimator* animator)
-: m_CollisionListener(0)
 {
 	if (0 != node)
 	{
@@ -187,7 +186,6 @@ bool MovingObject::testForCollision(MovingObject* other)
 		other->m_LastCollider = this;
 		this->collide(other, -collisionvector);
 		this->m_LastCollider = other;
-		this->broadcastCollision(other);
 		//<-- End Dragons
 		return true;
 	}
@@ -346,10 +344,4 @@ float MovingObject::calcImpulse(const MovingObject *other,  const irr::core::vec
 	float bottom = normal.dotProduct(normal) * (1/this->getAnimator()->getMass() + 1/other->getAnimator()->getMass() );
 
 	return top/bottom;
-}
-
-void MovingObject::broadcastCollision(MovingObject* target)
-{
-	if (!m_CollisionListener) { return; }
-	m_CollisionListener->collision(target, this);
 }

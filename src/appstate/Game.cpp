@@ -36,7 +36,8 @@ Game::Game(void)
 : m_GameState(GameState::Loading),
 m_MainMenu(0),
 m_PauseMenu(0),
-m_EndGameMenu(0)
+m_EndGameMenu(0),
+m_Instructions(0)
 {
 }
 
@@ -102,7 +103,13 @@ void Game::checkCollisions()
 		{
 			if ((*CurrentObject)->testForCollision(*OtherObject) )
 			{
-				//the objects have collided
+				//the objects have collided (collision response handled by the objects)
+				if ( (*CurrentObject)->getType() == ObjectType::PlayerShip
+					&& (*OtherObject)->getType() == ObjectType::Asteroid
+					&& !m_Timer->IsRunning() )
+				{
+					m_Timer->start();
+				}
 			}
 		}
 	}
@@ -212,9 +219,6 @@ void Game::loadScene()
 		LOG_INFO("Main Directional Light added");
 	}
 
-	//Register self with the player's collision listener
-	m_Player.getShipObject()->SetListener(this);
-
 	m_Timer.reset(new GameTimer() );
 
 }
@@ -286,7 +290,7 @@ void Game::runGame()
 	}
 	if (!asteroidsleft)
 	{
-		showGameOver();
+		m_GameState = GameState::GameOver;
 	}
 
 }
@@ -314,19 +318,6 @@ void Game::collectDeletedObjects()
 			//object has been cleaned up and is awaiting deletion
 			delete (*object);
 			objectIterator = m_Objects.erase(object);
-		}
-	}
-}
-
-void Game::collision(MovingObject *target, MovingObject *self)
-{
-	if (self != m_Player.getShipObject() ) { return; }
-	if (target->getType() == ObjectType::Asteroid)
-	{
-		m_Timer->start();
-		if (m_Player.getShipObject()->Listener() == this)
-		{
-			m_Player.getShipObject()->SetListener(0);	//remove self as the listener
 		}
 	}
 }
