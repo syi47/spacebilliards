@@ -360,7 +360,7 @@ void Game::pauseMenu()
 		m_PauseMenu = new Menu();
 		m_PauseMenu->setTitleImage("Paused.png");
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Resume", this, &Game::menu_Resume) );
-		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Play) );
+		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Restart) );
 		m_PauseMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
 		m_PauseMenu->setCurrentItem("Resume");
 	}
@@ -377,6 +377,12 @@ void Game::menu_Play()
 void Game::menu_Resume()
 {
 	resume();
+	removeMenus();
+}
+
+void Game::menu_Restart()
+{
+	restart();
 	removeMenus();
 }
 
@@ -438,5 +444,11 @@ void Game::resume()
 	}
 }
 
+void Game::restart()
+{
+	releaseScene();
+	loadScene();
+	resume();
+}
 
 }//namespace appstate
