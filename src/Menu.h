@@ -67,6 +67,9 @@ public:
 	///Sets the current item to be the item with the given name, if it exists
 	void setCurrentItem(const std::string& name);
 
+	///Sets the file to be used for the title image
+	void setTitleImage(const std::string& fileName);
+
 	///Sets the correct positions of the menu items
 	/** Sets the positions of each menu item based on how many there are and in what order they were added,
 	and also updates the position of the indicator showing the current menu item
@@ -74,10 +77,9 @@ public:
 	void layoutMenuItems();
 
 private:
-
-private:
 	HudString m_SelectCharacterString;
 	std::list<IMenuItem*> m_MenuItems;
 	typedef std::list<IMenuItem*>::iterator MenuItemIterator;
 	MenuItemIterator m_CurrentMenuItem;
+	irr::gui::IGUIImage *m_TitleImage;
 };
