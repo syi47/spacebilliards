@@ -266,3 +266,8 @@ void Player::releasePlayerObjects()
 	FSOUND_Sample_Free(m_ThrustLoopSound);
 	m_ThrustLoopSound = NULL;
 }
+
+void Player::clearInput()
+{
+	memset(&m_Input, 0, sizeof(PlayerInput) );
+}

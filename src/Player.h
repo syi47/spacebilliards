@@ -42,6 +42,13 @@ public:
 	void loadPlayerObjects();
 	void releasePlayerObjects();
 
+	///Stops the player from responding to an input
+	/**Useful if, for example, the menu has been shown while the player is moving the ship.
+	The Player will miss the key-up event and think the input needs to remain. Call this method
+	to essentially simulate all the keyups
+	**/
+	void clearInput();
+
 private:
 	struct PlayerInput
 	{
