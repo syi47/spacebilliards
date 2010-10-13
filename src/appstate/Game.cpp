@@ -249,7 +249,7 @@ void Game::loadGame()
 
 void Game::runGame()
 {
-	Irrlicht::getDevice()->setEventReceiver(&m_Player);
+	Irrlicht::getDevice()->setEventReceiver(this);
 	if (Irrlicht::getDevice()->getTimer()->isStopped() )
 	{
 		Irrlicht::getDevice()->getTimer()->start();
@@ -349,11 +349,13 @@ void Game::mainMenu()
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
 		m_MainMenu->setCurrentItem("Play");
 	}
+	m_MainMenu->layoutMenuItems();
 	Irrlicht::getDevice()->setEventReceiver(m_MainMenu);
 }
 
 void Game::pauseMenu()
 {
+	mainMenu();
 }
 
 void Game::menu_Play()
@@ -364,6 +366,11 @@ void Game::menu_Play()
 		delete m_MainMenu;
 		m_MainMenu = 0;
 	}
+}
+
+bool Game::OnEvent(const irr::SEvent &event)
+{
+	return m_Player.OnEvent(event);
 }
 
 }//namespace appstate

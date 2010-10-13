@@ -22,10 +22,10 @@ using namespace irr::core;
 
 HudString::HudString(const std::string& str, const irr::core::position2di& pos, HudFont::Enum font)
 : m_TextControl(0),
-m_FontType(font)
+m_FontType(font),
+m_Position(pos)
 {
 	SetText(str);
-	SetPosition(pos);
 }
 
 HudString::~HudString(void)
@@ -49,16 +49,18 @@ void HudString::SetText(const std::string &str)
 	else
 	{
 		clipSize = Irrlicht::getDevice()->getGUIEnvironment()->getBuiltInFont()->getDimension(wideText.c_str() );
-		clipSize *= 2;	//the values returned by getDimension are too small, hack to double them
+		clipSize *= 10;	//the values returned by getDimension are too small, hack to double them
 	}
 
-	//Here be dragons: having to continuously recreate the text causes fickering
+	//Here be dragons: having to continuously recreate the text causes flickering
+		//will need to write my own label class to replace the Irrlicht StaticText one to do this, or edit the StaticText and recompile
 	releaseSprite();
 	m_TextControl =  Irrlicht::getDevice()->getGUIEnvironment()->addStaticText(
 		wideText.c_str(), rect<s32>(position2di(), clipSize) );
 
 	//have to refresh the override font because the text control has been recreated
 	SetFont(m_FontType);
+	SetPosition(m_Position);
 }
 
 void HudString::SetFont(HudFont::Enum hudFont)
@@ -104,4 +106,10 @@ irr::gui::IGUIFont* HudString::getSmallFont()
 		smallFont = Irrlicht::getDevice()->getGUIEnvironment()->getFont("fontSmall.xml");
 	}
 	return smallFont;
+}
+
+void HudString::SetPosition(const irr::core::position2di &value)
+{
+	m_Position = value;
+	m_TextControl->setRelativePosition(value);
 }

@@ -205,6 +205,7 @@ void Player::loadPlayerObjects()
 			using irr::video::SColor;
 			using irr::video::SColorf;
 			using irr::core::vector3df;
+			using irr::core::dimension2df;
 
 			m_EngineLightNode->setVisible(false);
 
@@ -215,7 +216,7 @@ void Player::loadPlayerObjects()
 //TODO: fix bugs with particles here - UPDATE, is bug in Irrlicht
 /*
 			//add right engine particle system
-			irr::scene::IParticleSystemSceneNode* psnode = smgr->addParticleSystemSceneNode(false, m_EngineLightNode, -1, vector3df(18.421053f, 12.757895f, -0.526053f));
+			irr::scene::IParticleSystemSceneNode* psnode = smgr->addParticleSystemSceneNode(false, lightnode);
 			psnode->setParticleSize(dimension2df(0.3f, 2.0f) );
 			irr::scene::IParticleEmitter* em = psnode->createPointEmitter(vector3df(0, -0.01f, 0), 10, 30, 
 													SColor(255, 224, 60, 31),
@@ -231,18 +232,20 @@ void Player::loadPlayerObjects()
 			lightnode = 	smgr->addLightSceneNode(m_EngineLightNode, vector3df(-6.421053f, -4.757895f, 0.526053f),
 										SColorf(1.0f, 0.5f, 0.0f), 10.0f);
 //TODO: fix bugs with particles here
+
 /*
-			////add left engine particle system
-			//psnode = smgr->addParticleSystemSceneNode(false, lightnode);
-			//psnode->setParticleSize(dimension2df(0.3f, 2.0f) );
-			//em = psnode->createPointEmitter(vector3df(0, -0.01f, 0), 10, 30, 
-			//										SColor(255, 224, 60, 31),
-			//										SColor(255, 233, 170, 22), 500, 500, 15);
-			//psnode->setEmitter(em);
-			//em->drop();
-			//af = psnode->createFadeOutParticleAffector(SColor(0, 0, 0, 0), 200);
-			//psnode->addAffector(af);
-			//af->drop();
+			//add left engine particle system
+			psnode = smgr->addParticleSystemSceneNode(false, lightnode);
+			psnode->setParticleSize(dimension2df(0.3f, 2.0f) );
+			em = psnode->createPointEmitter(vector3df(0, -0.01f, 0), 10, 30, 
+													SColor(255, 224, 60, 31),
+													SColor(255, 233, 170, 22), 500, 500, 15);
+			psnode->setEmitter(em);
+			em->drop();
+			af = psnode->createFadeOutParticleAffector(SColor(0, 0, 0, 0), 200);
+			psnode->addAffector(af);
+			af->drop();
+
 */
 		}//if (m_EngineLightNode)
 
