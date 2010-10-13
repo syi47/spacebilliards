@@ -49,7 +49,7 @@ void HudString::SetText(const std::string &str)
 	else
 	{
 		clipSize = Irrlicht::getDevice()->getGUIEnvironment()->getBuiltInFont()->getDimension(wideText.c_str() );
-		clipSize *= 10;	//the values returned by getDimension are too small, hack to double them
+		clipSize *= 10;	//the values returned by getDimension are too small, hack to increase them
 	}
 
 	//Here be dragons: having to continuously recreate the text causes flickering
