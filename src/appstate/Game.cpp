@@ -37,7 +37,8 @@ Game::Game(void)
 m_MainMenu(0),
 m_PauseMenu(0),
 m_EndGameMenu(0),
-m_Instructions(0)
+m_InstructionsMenu(0),
+m_HighScore(0)
 {
 }
 
@@ -70,6 +71,10 @@ void Game::action()
 			mainMenu();
 			continue;
 
+		case (GameState::Instructions):
+			instructionsMenu();
+			continue;
+
 		case (GameState::Playing):
 			runGame();
 			continue;
@@ -80,6 +85,10 @@ void Game::action()
 
 		case (GameState::GameOver):
 			showGameOver();
+			continue;
+
+		default:
+			m_GameState = GameState::MainMenu;
 			continue;
 		}
 	}
@@ -355,6 +364,22 @@ void Game::pauseMenu()
 	Irrlicht::getDevice()->setEventReceiver(m_PauseMenu);
 }
 
+void Game::instructionsMenu()
+{
+	if (0 == m_InstructionsMenu)
+	{
+		m_InstructionsMenu = new Menu();
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Use Up & Down Arrows to Accelerate/Brake", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Use Left & Right Arrows to Turn", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Run into asteroids to make them bounce away", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Sink all the asteroids as quickly as possible", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Back to Main Menu", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->setCurrentItem("Back to Main Menu");
+		m_InstructionsMenu->layoutMenuItems();
+	}
+	Irrlicht::getDevice()->setEventReceiver(m_InstructionsMenu);
+}
+
 void Game::showGameOver()
 {
 	pause();
@@ -395,6 +420,12 @@ void Game::menu_MainMenu()
 	m_GameState = GameState::MainMenu;
 }
 
+void Game::menu_Instructions()
+{
+	removeMenus();
+	m_GameState = GameState::Instructions;
+}
+
 void Game::removeMenus()
 {
 	if (m_PauseMenu)
@@ -411,6 +442,11 @@ void Game::removeMenus()
 	{
 		delete m_EndGameMenu;
 		m_EndGameMenu = 0;
+	}
+	if (m_InstructionsMenu)
+	{
+		delete m_InstructionsMenu;
+		m_InstructionsMenu = 0;
 	}
 }
 

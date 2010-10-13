@@ -43,6 +43,7 @@ namespace GameState
 	{
 		Loading,
 		MainMenu,
+		Instructions,
 		Playing,
 		Paused,
 		GameOver,
@@ -72,6 +73,8 @@ private:
 
 	void mainMenu();
 
+	void instructionsMenu();
+
 	void runGame();
 
 	void pauseMenu();
@@ -82,7 +85,7 @@ private:
 
 	void menu_Exit() { m_GameState = GameState::Finished; }
 	void menu_Play();
-	void menu_Instructions() {};
+	void menu_Instructions();
 	void menu_Resume();
 	void menu_Restart();
 	void menu_MainMenu();
@@ -109,13 +112,14 @@ private:
 	std::auto_ptr<GameTimer> m_Timer;
 
 	Menu *m_MainMenu;
+	Menu *m_InstructionsMenu;
 	Menu *m_PauseMenu;
 	Menu *m_EndGameMenu;
 
-	HudString *m_Instructions;
-
 	//Displays the time
 	HudString m_TimeString;
+
+	int m_HighScore;
 };
 
 
