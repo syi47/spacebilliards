@@ -88,7 +88,6 @@ void Game::action()
 			continue;
 
 		default:
-			m_GameState = GameState::MainMenu;
 			continue;
 		}
 	}
@@ -229,6 +228,8 @@ void Game::loadScene()
 	}
 
 	m_Timer.reset(new GameTimer() );
+
+	m_TimeString.SetFont(HudFont::Small);
 
 }
 
@@ -390,8 +391,18 @@ void Game::showGameOver()
 		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Play Again", this, &Game::menu_Restart) );
 		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
 		m_EndGameMenu->setCurrentItem("Play Again");
+
+		if (m_Timer->getTimeElapsedInMilliseconds() < m_HighScore
+			|| 0 == m_HighScore)
+		{
+			irr::gui::IGUIWindow *messageBox = Irrlicht::getDevice()->getGUIEnvironment()->addMessageBox(L"HIGH SCORE!!", L"Enter your name", true);
+			(*messageBox->getChildren().getLast() )->move(position2di(0, 10) );
+			irr::gui::IGUIEditBox *playerNameControl = Irrlicht::getDevice()->getGUIEnvironment()->addEditBox(
+				L"Player", recti(50, 45, 300, 60), true, messageBox);
+			Irrlicht::getDevice()->getGUIEnvironment()->setFocus(playerNameControl);
+		}
 	}
-	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
+	Irrlicht::getDevice()->setEventReceiver(0);
 	m_EndGameMenu->layoutMenuItems();
 }
 
@@ -487,8 +498,8 @@ void Game::pause()
 	if (GameState::Playing == m_GameState)
 	{
 		m_GameState = GameState::Paused;
-		m_Player.clearInput();
 	}
+	m_Player.clearInput();
 }
 
 void Game::resume()
