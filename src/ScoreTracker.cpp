@@ -41,9 +41,10 @@ void ScoreTracker::load()
 	{
 		if (reader->getNodeType() == EXN_ELEMENT
 			&& std::string(reader->getNodeName() ) == "score"
-			&& reader->getAttributeValue("time") != 0)
+			&& reader->getAttributeValue("time") != 0
+			&& reader->getAttributeValue("name") != 0)
 		{
-			m_Scores.push_back(Score(reader->getAttributeValueAsInt("time"), "NotLoadingNameYet") );
+			m_Scores.push_back(Score(reader->getAttributeValueAsInt("time"), reader->getAttributeValue("name") ) );
 		}
 	}
 	delete reader;
@@ -65,7 +66,7 @@ void ScoreTracker::save()
 		LOG_ERROR("File System Error while trying to save scores");
 		return;
 	}
-
+	sortScores();
 	writer->writeXMLHeader();
 	for (ScoreIterator it = m_Scores.begin(); it != m_Scores.end(); it++)
 	{
@@ -74,6 +75,7 @@ void ScoreTracker::save()
 		std::wstring scoreName(it->Name().size(), ' ');
 		std::copy(it->Name().begin(), it->Name().end(), scoreName.begin() );
 		writer->writeElement(L"score", true, L"time", scoreTime.str().c_str(), L"name", scoreName.c_str() );
+		writer->writeLineBreak();
 	}
 
 	delete writer;
@@ -81,12 +83,22 @@ void ScoreTracker::save()
 
 int ScoreTracker::addScore(int time, const std::string& name)
 {
-	m_Scores.push_back(Score(time, name) );
+	int position = 0;
 	sortScores();
+	ScoreIterator insertPoint = m_Scores.begin();
+	for (; insertPoint != m_Scores.end(); insertPoint++)
+	{
+		if (insertPoint->Time() > time)
+		{
+			break;
+		}
+		++position;
+	}
+	m_Scores.insert(insertPoint, Score(time, name) );
+	return position;
 }
 
 void ScoreTracker::sortScores()
 {
 	m_Scores.sort();
-	m_Scores.reverse();
 }
