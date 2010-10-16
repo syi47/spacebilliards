@@ -262,6 +262,7 @@ void Game::loadGame()
 	Irrlicht::getDevice()->getGUIEnvironment()->getSkin()->setColor(irr::gui::EGDC_BUTTON_TEXT, irr::video::SColor(255, 255, 255, 255) );
 
 	loadScene();
+	m_HighScores.load();
 
 	m_GameState = GameState::MainMenu;
 }
@@ -398,6 +399,8 @@ void Game::showGameOver()
 			|| 0 == m_HighScore)
 		{
 			//TODO: get player score
+			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), "Player");
+			m_HighScores.save();
 			m_HighScore = m_Timer->getTimeElapsedInMilliseconds();
 		}
 	}
