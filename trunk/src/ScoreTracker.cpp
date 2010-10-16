@@ -16,6 +16,7 @@
 #include "ScoreTracker.h"
 #include "Engine.h"
 #include <sstream>
+#include <algorithm>
 
 using namespace irr::io;
 
@@ -100,5 +101,10 @@ int ScoreTracker::addScore(int time, const std::string& name)
 
 void ScoreTracker::sortScores()
 {
-	m_Scores.sort();
+	std::sort(m_Scores.begin(), m_Scores.end() );
+}
+
+const Score& ScoreTracker::at(int index) const
+{
+	return m_Scores[index];
 }
