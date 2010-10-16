@@ -14,12 +14,13 @@
 */
 
 #include "Menu.h"
+#include <algorithm>
 
 using namespace irr::core;
 
 Menu::Menu(void)
-: m_CurrentMenuItem(m_MenuItems.begin() ),
-m_SelectCharacterString(">", position2di(), HudFont::Large),
+: m_CurrentMenuItem(0),
+m_SelectCharacterString(">"),
 m_TitleImage(0)
 {
 }
@@ -41,6 +42,7 @@ void Menu::addMenuItem(IMenuItem* item)
 	if (item != 0)
 	{
 		m_MenuItems.push_back(item);
+		m_CurrentMenuItem = item;
 		layoutMenuItems();
 	}
 }
@@ -50,38 +52,40 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 	if (eventdata.EventType == irr::EET_KEY_INPUT_EVENT
 		&& eventdata.KeyInput.PressedDown)
 	{
+		MenuItemIterator currentMenuItem = std::find(m_MenuItems.begin(), m_MenuItems.end(), m_CurrentMenuItem);
 		//Process keyboard event
 		switch(eventdata.KeyInput.Key)
 		{
 		case irr::KEY_UP:
 		case irr::KEY_LEFT:
 		{
-			if (m_CurrentMenuItem == m_MenuItems.begin() )
+			if (currentMenuItem == m_MenuItems.begin() )
 			{
-				m_CurrentMenuItem = m_MenuItems.end();
+				currentMenuItem = m_MenuItems.end();
 			}
-			m_CurrentMenuItem--;
+			currentMenuItem--;
 			break;
 		}
 
 		case irr::KEY_DOWN:
 		case irr::KEY_RIGHT:
 		{
-			m_CurrentMenuItem++;
-			if (m_CurrentMenuItem == m_MenuItems.end()) { m_CurrentMenuItem = m_MenuItems.begin(); }
+			currentMenuItem++;
+			if (currentMenuItem == m_MenuItems.end()) { currentMenuItem = m_MenuItems.begin(); }
 			break;
 		}
 
 		case irr::KEY_SPACE:
 		case irr::KEY_RETURN:
 		{
-			(*m_CurrentMenuItem)->select();
-			break;
+			(*currentMenuItem)->select();
+			return true;	//really shouldn't be returning here, needs to change if there's a menu item that doesn't change menus
 		}
 
 		default:
 			return false;	//unhandled
 		}
+		m_CurrentMenuItem = *currentMenuItem;
 		return true;	//totally handled the fuck out of that shit
 	}
 	return false;	//unhandled
@@ -106,7 +110,7 @@ void Menu::layoutMenuItems()
 	for (MenuItemIterator item = m_MenuItems.begin(); item != m_MenuItems.end(); item++)
 	{
 		(*item)->string().SetPosition(position2di(nextX, nextY) );
-		if (item == m_CurrentMenuItem)
+		if (*item == m_CurrentMenuItem)
 		{
 			m_SelectCharacterString.SetFont( (*item)->string().Font() );
 			m_SelectCharacterString.SetPosition(position2di(nextX - 50, nextY) );
@@ -122,7 +126,7 @@ void Menu::setCurrentItem(const std::string &name)
 	{
 		if ( (*item)->string().Text() == name)
 		{
-			m_CurrentMenuItem = item;
+			m_CurrentMenuItem = *item;
 		}
 	}
 }
