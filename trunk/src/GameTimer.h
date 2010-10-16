@@ -51,6 +51,8 @@ public:
 	///Returns the timer's current running state
 	bool IsRunning() { return m_IsRunning; }
 
+	static std::string timeAsString(int milliseconds);
+
 private:
 	unsigned int m_StartTime;
 	unsigned int m_StopTime;

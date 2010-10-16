@@ -55,7 +55,12 @@ int GameTimer::getTimeElapsedInMilliseconds()
 
 std::string GameTimer::getTimeElapsedString()
 {
-	int time = getTimeElapsedInMilliseconds();
+	return GameTimer::timeAsString(getTimeElapsedInMilliseconds() );
+}
+
+std::string GameTimer::timeAsString(int milliseconds)
+{
+	int time = milliseconds;
 	int hours = time / 3600000;
 	time -= hours * 3600000;
 	int minutes = time / 60000;

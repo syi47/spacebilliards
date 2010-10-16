@@ -97,6 +97,9 @@ private:
 	void resume();
 	void restart();
 
+	void loadHighScoreMenu();
+
+
 private:
 	GameState::Enum m_GameState;
 
