@@ -20,6 +20,7 @@
 #include "../GameTimer.h"
 #include "../Menu.h"
 #include "../InputBox.h"
+#include <sstream>
 
 #pragma comment(lib, "irrlicht.lib")
 #pragma comment(lib, "fmodvc.lib")
@@ -373,14 +374,22 @@ void Game::instructionsMenu()
 	if (0 == m_InstructionsMenu)
 	{
 		m_InstructionsMenu = new Menu();
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Use Up & Down Arrows to Accelerate/Brake", this, &Game::menu_MainMenu) );
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Use Left & Right Arrows to Turn", this, &Game::menu_MainMenu) );
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Run into asteroids to make them bounce away", this, &Game::menu_MainMenu) );
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Sink all the asteroids as quickly as possible", this, &Game::menu_MainMenu) );
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Back to Main Menu", this, &Game::menu_MainMenu) );
-		m_InstructionsMenu->setCurrentItem("Back to Main Menu");
-		m_InstructionsMenu->layoutMenuItems();
+		m_InstructionsMenu->setTitleImage("Title.png");
+		std::vector<std::string> instructions;
+		instructions.push_back("Use Up & Down Arrows to Accelerate/Brake");
+		instructions.push_back("Use Left & Right Arrows to Turn");
+		instructions.push_back("Run into asteroids to make them bounce away");
+		instructions.push_back("Sink all the asteroids as quickly as possible");
+		for (unsigned int i = 0; i < instructions.size(); ++i)
+		{
+			IMenuItem *item = new StaticMenuItem(instructions[i]);
+			item->string().SetFont(HudFont::Small);
+			m_InstructionsMenu->addMenuItem(item);
+		}
+		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->setCurrentItem("Main Menu");
 	}
+	m_InstructionsMenu->layoutMenuItems();
 	Irrlicht::getDevice()->setEventReceiver(m_InstructionsMenu);
 }
 
@@ -391,6 +400,19 @@ void Game::showGameOver()
 	{
 		m_TimeString.SetFont(HudFont::Large);
 		m_EndGameMenu = new Menu();
+		m_EndGameMenu->setTitleImage("Title.png");
+		for (unsigned int i = 0; i < 10; ++i)
+		{
+			std::stringstream scoreText;
+			scoreText << (i+1) << ". ";
+			if (i < m_HighScores.count() )
+			{
+				scoreText << m_HighScores[i].Time() << " - " << m_HighScores[i].Name();
+			}
+			IMenuItem *scoreItem = new StaticMenuItem(scoreText.str() );
+			scoreItem->string().SetFont(HudFont::Small);
+			m_EndGameMenu->addMenuItem(scoreItem);
+		}
 		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Play Again", this, &Game::menu_Restart) );
 		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
 		m_EndGameMenu->setCurrentItem("Play Again");
