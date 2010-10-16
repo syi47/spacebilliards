@@ -91,6 +91,6 @@ private:
 	HudString m_SelectCharacterString;
 	std::list<IMenuItem*> m_MenuItems;
 	typedef std::list<IMenuItem*>::iterator MenuItemIterator;
-	MenuItemIterator m_CurrentMenuItem;
+	IMenuItem* m_CurrentMenuItem;
 	irr::gui::IGUIImage *m_TitleImage;
 };
