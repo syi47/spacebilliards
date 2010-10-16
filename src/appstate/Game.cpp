@@ -398,25 +398,7 @@ void Game::showGameOver()
 	pause();
 	if (0 == m_EndGameMenu)
 	{
-		m_TimeString.SetFont(HudFont::Large);
-		m_EndGameMenu = new Menu();
-		m_EndGameMenu->setTitleImage("Title.png");
-		for (unsigned int i = 0; i < 10; ++i)
-		{
-			std::stringstream scoreText;
-			scoreText << (i+1) << ". ";
-			if (i < m_HighScores.count() )
-			{
-				scoreText << m_HighScores[i].Time() << " - " << m_HighScores[i].Name();
-			}
-			IMenuItem *scoreItem = new StaticMenuItem(scoreText.str() );
-			scoreItem->string().SetFont(HudFont::Small);
-			m_EndGameMenu->addMenuItem(scoreItem);
-		}
-		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Play Again", this, &Game::menu_Restart) );
-		m_EndGameMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
-		m_EndGameMenu->setCurrentItem("Play Again");
-
+		loadHighScoreMenu();
 		if (m_Timer->getTimeElapsedInMilliseconds() < m_HighScore
 			|| 0 == m_HighScore)
 		{
@@ -544,6 +526,37 @@ void Game::restart()
 	loadScene();
 	resume();
 	m_GameState = GameState::Playing;
+}
+
+void Game::loadHighScoreMenu()
+{
+	m_TimeString.SetFont(HudFont::Large);
+	m_EndGameMenu = new Menu();
+	m_EndGameMenu->setTitleImage("Title.png");
+	for (unsigned int i = 0; i < 10; ++i)
+	{
+		std::stringstream scoreText;
+		scoreText << (i+1) << ". ";
+		if (i < m_HighScores.count() )
+		{
+			scoreText << GameTimer::timeAsString(m_HighScores[i].Time() ) << " - " << m_HighScores[i].Name();
+		}
+		IMenuItem *scoreItem = new StaticMenuItem(scoreText.str() );
+		scoreItem->string().SetFont(HudFont::Small);
+		m_EndGameMenu->addMenuItem(scoreItem);
+	}
+
+	if (m_GameState == GameState::GameOver)
+	{
+		IMenuItem *playAgainItem = new MenuItem<Game>("Play Again", this, &Game::menu_Restart);
+		playAgainItem->string().SetFont(HudFont::Small);
+		m_EndGameMenu->addMenuItem(playAgainItem);
+	}
+
+	IMenuItem *mainMenuItem = new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu);
+	mainMenuItem->string().SetFont(HudFont::Small);
+	m_EndGameMenu->addMenuItem(mainMenuItem);
+	m_EndGameMenu->setCurrentItem("Play Again");
 }
 
 }//namespace appstate
