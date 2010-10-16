@@ -32,7 +32,7 @@ class MenuItem : public IMenuItem
 {
 public:
 	typedef void (T::*selectFunction)(void);
-	MenuItem(std::string name, T* object, selectFunction function)
+	MenuItem(const std::string& name, T* object, selectFunction function)
 		: m_String(name), m_Object(object), m_Function(function)
 	{
 		m_String.SetFont(HudFont::Large);
@@ -44,6 +44,17 @@ private:
 	HudString m_String;
 	T* m_Object;
 	selectFunction m_Function;
+};
+
+class StaticMenuItem : public IMenuItem
+{
+public:
+	StaticMenuItem(const std::string& name) : m_String(name) {}
+	void select() {}
+	HudString& string() { return m_String; }
+
+private:
+	HudString m_String;
 };
 
 class Menu : public irr::IEventReceiver
