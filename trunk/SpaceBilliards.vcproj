@@ -213,6 +213,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\InputBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\appstate\LoadCore.cpp"
 				>
 			</File>
@@ -246,6 +250,10 @@
 			</File>
 			<File
 				RelativePath=".\src\appstate\Release.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ScoreTracker.cpp"
 				>
 			</File>
 		</Filter>
@@ -295,6 +303,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\InputBox.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\appstate\LoadCore.h"
 				>
 			</File>
@@ -328,6 +340,10 @@
 			</File>
 			<File
 				RelativePath=".\src\appstate\Release.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ScoreTracker.h"
 				>
 			</File>
 		</Filter>

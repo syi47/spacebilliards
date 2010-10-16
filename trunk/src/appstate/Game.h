@@ -23,6 +23,7 @@
 #include "../Engine.h"
 #include "IAppState.h"
 #include "../HudString.h"
+#include "../ScoreTracker.h"
 
 class GameTimer;
 class Menu;
@@ -118,6 +119,8 @@ private:
 
 	//Displays the time
 	HudString m_TimeString;
+
+	ScoreTracker m_HighScores;
 
 	int m_HighScore;
 };
