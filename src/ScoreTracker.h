@@ -15,7 +15,21 @@
 
 #pragma once
 #include <string>
-#include <list>
+#include <vector>
+
+class Score
+{
+public:
+	Score(int time, const std::string& name)
+		: m_Time(time), m_Name(name) {}
+	int Time() const { return m_Time; }
+	const std::string& Name() const { return m_Name; }
+	bool operator<(const Score& rvalue) const { return m_Time < rvalue.Time(); }
+private:
+	int m_Time;
+	std::string m_Name;
+};
+
 
 class ScoreTracker
 {
@@ -27,26 +41,17 @@ public:
 	void load();
 
 	int addScore(int time, const std::string& name);
+	unsigned int count() const {return m_Scores.size(); }
+
+	const Score& at(int index) const;
+	const Score& operator[](int index) const { return at(index); }
 
 private:
-	class Score
-	{
-	public:
-		Score(int time, const std::string& name)
-			: m_Time(time), m_Name(name) {}
-		int Time() const { return m_Time; }
-		const std::string& Name() const { return m_Name; }
-		bool operator<(const Score& rvalue) const { return m_Time < rvalue.Time(); }
-	private:
-		int m_Time;
-		std::string m_Name;
-	};
-
 private:
 	void sortScores();
 
 private:
 	std::string m_FileName;
-	std::list<Score> m_Scores;
-	typedef std::list<Score>::iterator ScoreIterator;
+	std::vector<Score> m_Scores;
+	typedef std::vector<Score>::iterator ScoreIterator;
 };
