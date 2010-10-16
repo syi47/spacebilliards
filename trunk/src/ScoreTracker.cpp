@@ -54,12 +54,6 @@ void ScoreTracker::load()
 
 void ScoreTracker::save()
 {
-	if (0 == m_Scores.size() )
-	{
-		LOG_INFO("Couldn't save scores - no scores to save");
-		return;
-	}
-
 	IWriteFile *file = Irrlicht::getDevice()->getFileSystem()->createAndWriteFile(m_FileName.c_str(), false);
 	IXMLWriter *writer = Irrlicht::getDevice()->getFileSystem()->createXMLWriter(file);
 	if (0 == writer)
@@ -107,4 +101,10 @@ void ScoreTracker::sortScores()
 const Score& ScoreTracker::at(int index) const
 {
 	return m_Scores[index];
+}
+
+void ScoreTracker::clearScores()
+{
+	m_Scores.empty();
+	save();
 }

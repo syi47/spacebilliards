@@ -78,6 +78,10 @@ void Game::action()
 			instructionsMenu();
 			continue;
 
+		case (GameState::HighScores):
+			highScoresMenu();
+			continue;
+
 		case (GameState::Playing):
 			runGame();
 			continue;
@@ -346,6 +350,7 @@ void Game::mainMenu()
 		m_MainMenu->setTitleImage("Title.png");
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Play", this, &Game::menu_Play) );
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Instructions", this, &Game::menu_Instructions) );
+		m_MainMenu->addMenuItem(new MenuItem<Game>("High Scores", this, &Game::menu_HighScores) );
 		m_MainMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
 		m_MainMenu->setCurrentItem("Play");
 	}
@@ -402,8 +407,9 @@ void Game::showGameOver()
 		if (m_Timer->getTimeElapsedInMilliseconds() < m_HighScore
 			|| 0 == m_HighScore)
 		{
-			//TODO: get player score
-			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), "Player");
+			//TODO: get player name
+			std::string playerName = "Player";
+			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), playerName);
 			m_HighScores.save();
 			m_HighScore = m_Timer->getTimeElapsedInMilliseconds();
 		}
@@ -441,6 +447,12 @@ void Game::menu_Instructions()
 {
 	removeMenus();
 	m_GameState = GameState::Instructions;
+}
+
+void Game::menu_HighScores()
+{
+	removeMenus();
+	m_GameState = GameState::HighScores;
 }
 
 void Game::removeMenus()
@@ -528,6 +540,16 @@ void Game::restart()
 	m_GameState = GameState::Playing;
 }
 
+void Game::highScoresMenu()
+{
+	if (0 == m_EndGameMenu)
+	{
+		loadHighScoreMenu();
+	}
+	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
+	m_EndGameMenu->layoutMenuItems();
+}
+
 void Game::loadHighScoreMenu()
 {
 	m_TimeString.SetFont(HudFont::Large);
@@ -551,12 +573,19 @@ void Game::loadHighScoreMenu()
 		IMenuItem *playAgainItem = new MenuItem<Game>("Play Again", this, &Game::menu_Restart);
 		playAgainItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(playAgainItem);
+		m_EndGameMenu->setCurrentItem("Play Again");
+	}
+
+	if (m_GameState == GameState::HighScores)
+	{
+		IMenuItem *clearScoresItem = new MenuItem<ScoreTracker>("Clear Scores", &m_HighScores, &ScoreTracker::clearScores);
+		clearScoresItem->string().SetFont(HudFont::Small);
+		m_EndGameMenu->addMenuItem(clearScoresItem);
 	}
 
 	IMenuItem *mainMenuItem = new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu);
 	mainMenuItem->string().SetFont(HudFont::Small);
 	m_EndGameMenu->addMenuItem(mainMenuItem);
-	m_EndGameMenu->setCurrentItem("Play Again");
 }
 
 }//namespace appstate
