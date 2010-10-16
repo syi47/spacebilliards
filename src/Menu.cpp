@@ -108,6 +108,7 @@ void Menu::layoutMenuItems()
 		(*item)->string().SetPosition(position2di(nextX, nextY) );
 		if (item == m_CurrentMenuItem)
 		{
+			m_SelectCharacterString.SetFont( (*item)->string().Font() );
 			m_SelectCharacterString.SetPosition(position2di(nextX - 50, nextY) );
 		}
 		nextY += paddingY;
