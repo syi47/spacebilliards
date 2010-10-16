@@ -42,6 +42,7 @@ public:
 
 	int addScore(int time, const std::string& name);
 	unsigned int count() const {return m_Scores.size(); }
+	void clearScores();
 
 	const Score& at(int index) const;
 	const Score& operator[](int index) const { return at(index); }

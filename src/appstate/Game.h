@@ -45,6 +45,7 @@ namespace GameState
 		Loading,
 		MainMenu,
 		Instructions,
+		HighScores,
 		Playing,
 		Paused,
 		GameOver,
@@ -76,6 +77,8 @@ private:
 
 	void instructionsMenu();
 
+	void highScoresMenu();
+
 	void runGame();
 
 	void pauseMenu();
@@ -87,6 +90,7 @@ private:
 	void menu_Exit() { m_GameState = GameState::Finished; }
 	void menu_Play();
 	void menu_Instructions();
+	void menu_HighScores();
 	void menu_Resume();
 	void menu_Restart();
 	void menu_MainMenu();
