@@ -37,7 +37,7 @@ void ScoreTracker::load()
 		LOG_INFO("Couldn't load scores");
 		return;
 	}
-	m_Scores.empty();
+	m_Scores.clear();
 	while (reader->read() )
 	{
 		if (reader->getNodeType() == EXN_ELEMENT
@@ -105,6 +105,7 @@ const Score& ScoreTracker::at(int index) const
 
 void ScoreTracker::clearScores()
 {
-	m_Scores.empty();
+	m_Scores.clear();
 	save();
+	load();
 }
