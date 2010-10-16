@@ -19,6 +19,7 @@
 #include "../ObjectFactory.h"
 #include "../GameTimer.h"
 #include "../Menu.h"
+#include "../InputBox.h"
 
 #pragma comment(lib, "irrlicht.lib")
 #pragma comment(lib, "fmodvc.lib")
@@ -38,7 +39,8 @@ m_MainMenu(0),
 m_PauseMenu(0),
 m_EndGameMenu(0),
 m_InstructionsMenu(0),
-m_HighScore(0)
+m_HighScore(0),
+m_HighScores("scores.xml")
 {
 }
 
@@ -395,14 +397,11 @@ void Game::showGameOver()
 		if (m_Timer->getTimeElapsedInMilliseconds() < m_HighScore
 			|| 0 == m_HighScore)
 		{
-			irr::gui::IGUIWindow *messageBox = Irrlicht::getDevice()->getGUIEnvironment()->addMessageBox(L"HIGH SCORE!!", L"Enter your name", true);
-			(*messageBox->getChildren().getLast() )->move(position2di(0, 10) );
-			irr::gui::IGUIEditBox *playerNameControl = Irrlicht::getDevice()->getGUIEnvironment()->addEditBox(
-				L"Player", recti(50, 45, 300, 60), true, messageBox);
-			Irrlicht::getDevice()->getGUIEnvironment()->setFocus(playerNameControl);
+			//TODO: get player score
+			m_HighScore = m_Timer->getTimeElapsedInMilliseconds();
 		}
 	}
-	Irrlicht::getDevice()->setEventReceiver(0);
+	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
 	m_EndGameMenu->layoutMenuItems();
 }
 
