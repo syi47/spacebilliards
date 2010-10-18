@@ -128,8 +128,6 @@ private:
 	HudString m_TimeString;
 
 	ScoreTracker m_HighScores;
-
-	int m_HighScore;
 };
 
 
