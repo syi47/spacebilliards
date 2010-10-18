@@ -20,7 +20,6 @@
 #include "../GameTimer.h"
 #include "../Menu.h"
 #include "../InputBox.h"
-#include "../other/Win32InputBox.h"
 #include "../StringConvert.h"
 #include <sstream>
 
@@ -406,10 +405,8 @@ void Game::showGameOver()
 	{
 		if (m_HighScores.isHighScore(m_Timer->getTimeElapsedInMilliseconds() ) )
 		{
-			wchar_t buf[100];
-			memset(buf, 0, 100);
-			CWin32InputBox::InputBox(L"High Score!", L"Enter Name:", buf, 100);
-			std::string playerName = StringConvert::wideStringToString(buf);
+			//TODO: get the player's name
+			std::string playerName = "Player";
 			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), playerName);
 			m_HighScores.save();
 		}
@@ -455,6 +452,12 @@ void Game::menu_HighScores()
 {
 	removeMenus();
 	m_GameState = GameState::HighScores;
+}
+
+void Game::menu_ClearHighScores()
+{
+	m_HighScores.clearScores();
+	removeMenus();
 }
 
 void Game::removeMenus()
@@ -580,7 +583,7 @@ void Game::loadHighScoreMenu()
 
 	if (m_GameState == GameState::HighScores)
 	{
-		IMenuItem *clearScoresItem = new MenuItem<ScoreTracker>("Clear Scores", &m_HighScores, &ScoreTracker::clearScores);
+		IMenuItem *clearScoresItem = new MenuItem<Game>("Clear Scores", this, &Game::menu_ClearHighScores);
 		clearScoresItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(clearScoresItem);
 	}

@@ -94,6 +94,7 @@ private:
 	void menu_Resume();
 	void menu_Restart();
 	void menu_MainMenu();
+	void menu_ClearHighScores();
 
 	void removeMenus();
 
