@@ -20,6 +20,10 @@
 class Score
 {
 public:
+	///Constructor
+	/** @param time Time, in Milliseconds, of the score
+	@param name The name of the Player who owns the score
+	**/
 	Score(int time, const std::string& name)
 		: m_Time(time), m_Name(name) {}
 	int Time() const { return m_Time; }	///< The time of the score
