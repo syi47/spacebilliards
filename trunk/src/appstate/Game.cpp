@@ -40,7 +40,6 @@ m_MainMenu(0),
 m_PauseMenu(0),
 m_EndGameMenu(0),
 m_InstructionsMenu(0),
-m_HighScore(0),
 m_HighScores("scores.xml")
 {
 }
@@ -403,16 +402,15 @@ void Game::showGameOver()
 	pause();
 	if (0 == m_EndGameMenu)
 	{
-		loadHighScoreMenu();
-		if (m_Timer->getTimeElapsedInMilliseconds() < m_HighScore
-			|| 0 == m_HighScore)
+		if (m_HighScores.isHighScore(m_Timer->getTimeElapsedInMilliseconds() ) )
 		{
 			//TODO: get player name
 			std::string playerName = "Player";
 			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), playerName);
 			m_HighScores.save();
-			m_HighScore = m_Timer->getTimeElapsedInMilliseconds();
 		}
+		
+		loadHighScoreMenu();
 	}
 	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
 	m_EndGameMenu->layoutMenuItems();
