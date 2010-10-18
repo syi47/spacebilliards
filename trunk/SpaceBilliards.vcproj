@@ -257,6 +257,10 @@
 				RelativePath=".\src\ScoreTracker.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\other\Win32InputBox.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -345,6 +349,14 @@
 			</File>
 			<File
 				RelativePath=".\src\ScoreTracker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\StringConvert.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\other\Win32InputBox.h"
 				>
 			</File>
 		</Filter>

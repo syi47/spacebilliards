@@ -14,23 +14,18 @@
 */
 
 #include "InputBox.h"
+#include "StringConvert.h"
 
 using namespace irr::core;
 using namespace irr::gui;
 
-std::wstring stringToWideString(const std::string& str)
-{
-	std::wstring wideString(str.length(), L' ');
-	std::copy(str.begin(), str.end(), wideString.begin() );
-	return wideString;
-}
 
 InputBox::InputBox(const std::string &caption, const std::string &text, const std::string &input)
 {
 	//need to convert to Unicode before sending string to Irrlicht
-	std::wstring wideCaption = stringToWideString(caption);
-	std::wstring wideText = stringToWideString(text);
-	std::wstring wideInput = stringToWideString(input);
+	std::wstring wideCaption = StringConvert::stringToWideString(caption);
+	std::wstring wideText = StringConvert::stringToWideString(text);
+	std::wstring wideInput = StringConvert::stringToWideString(input);
 
 	m_Window = Irrlicht::getDevice()->getGUIEnvironment()->addMessageBox(wideCaption.c_str(), wideText.c_str(), true);
 	m_OKButton = *(m_Window->getChildren().getLast() );

@@ -20,6 +20,8 @@
 #include "../GameTimer.h"
 #include "../Menu.h"
 #include "../InputBox.h"
+#include "../other/Win32InputBox.h"
+#include "../StringConvert.h"
 #include <sstream>
 
 #pragma comment(lib, "irrlicht.lib")
@@ -404,8 +406,10 @@ void Game::showGameOver()
 	{
 		if (m_HighScores.isHighScore(m_Timer->getTimeElapsedInMilliseconds() ) )
 		{
-			//TODO: get player name
-			std::string playerName = "Player";
+			wchar_t buf[100];
+			memset(buf, 0, 100);
+			CWin32InputBox::InputBox(L"High Score!", L"Enter Name:", buf, 100);
+			std::string playerName = StringConvert::wideStringToString(buf);
 			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), playerName);
 			m_HighScores.save();
 		}
