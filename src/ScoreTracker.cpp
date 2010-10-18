@@ -76,7 +76,7 @@ void ScoreTracker::save()
 	delete writer;
 }
 
-int ScoreTracker::addScore(int time, const std::string& name)
+void ScoreTracker::addScore(int time, const std::string& name)
 {
 	int position = 0;
 	sortScores();
@@ -90,7 +90,6 @@ int ScoreTracker::addScore(int time, const std::string& name)
 		++position;
 	}
 	m_Scores.insert(insertPoint, Score(time, name) );
-	return position;
 }
 
 void ScoreTracker::sortScores()
@@ -108,4 +107,9 @@ void ScoreTracker::clearScores()
 	m_Scores.clear();
 	save();
 	load();
+}
+
+bool ScoreTracker::isHighScore(int /*timeInMilliseconds*/)
+{
+	return true;
 }
