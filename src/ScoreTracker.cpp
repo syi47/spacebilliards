@@ -21,7 +21,8 @@
 using namespace irr::io;
 
 ScoreTracker::ScoreTracker(const std::string& fileName)
-: m_FileName(fileName)
+: m_FileName(fileName),
+m_LastScoreIndex(0)
 {
 }
 
@@ -37,7 +38,7 @@ void ScoreTracker::load()
 		LOG_INFO("Couldn't load scores");
 		return;
 	}
-	m_Scores.clear();
+	removeCachedScores();
 	while (reader->read() )
 	{
 		if (reader->getNodeType() == EXN_ELEMENT
@@ -90,6 +91,7 @@ void ScoreTracker::addScore(int time, const std::string& name)
 		++position;
 	}
 	m_Scores.insert(insertPoint, Score(time, name) );
+	m_LastScoreIndex = position;
 }
 
 void ScoreTracker::sortScores()
@@ -104,12 +106,29 @@ const Score& ScoreTracker::at(int index) const
 
 void ScoreTracker::clearScores()
 {
-	m_Scores.clear();
+	removeCachedScores();
 	save();
 	load();
 }
 
-bool ScoreTracker::isHighScore(int /*timeInMilliseconds*/)
+void ScoreTracker::removeCachedScores()
 {
-	return true;
+	m_Scores.clear();
+	m_LastScoreIndex = 0;
+}
+
+int ScoreTracker::rateScore(int time)
+{
+	if (time > m_Scores.back().Time() )
+	{
+		return -1;
+	}
+	for (unsigned int i = 0; i < m_Scores.size(); ++i)
+	{
+		if (m_Scores[i].Time() > time)
+		{
+			return i;
+		}
+	}
+	return -1;
 }

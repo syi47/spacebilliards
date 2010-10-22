@@ -348,10 +348,10 @@ void Game::mainMenu()
 		//initialise the menu
 		m_MainMenu = new Menu();
 		m_MainMenu->setTitleImage("Title.png");
-		m_MainMenu->addMenuItem(new MenuItem<Game>("Play", this, &Game::menu_Play) );
-		m_MainMenu->addMenuItem(new MenuItem<Game>("Instructions", this, &Game::menu_Instructions) );
-		m_MainMenu->addMenuItem(new MenuItem<Game>("High Scores", this, &Game::menu_HighScores) );
-		m_MainMenu->addMenuItem(new MenuItem<Game>("Exit", this, &Game::menu_Exit) );
+		m_MainMenu->addMenuItem(new FunctionMenuItem<Game>("Play", this, &Game::menu_Play) );
+		m_MainMenu->addMenuItem(new FunctionMenuItem<Game>("Instructions", this, &Game::menu_Instructions) );
+		m_MainMenu->addMenuItem(new FunctionMenuItem<Game>("High Scores", this, &Game::menu_HighScores) );
+		m_MainMenu->addMenuItem(new FunctionMenuItem<Game>("Exit", this, &Game::menu_Exit) );
 		m_MainMenu->setCurrentItem("Play");
 	}
 	m_MainMenu->layoutMenuItems();
@@ -365,9 +365,9 @@ void Game::pauseMenu()
 	{
 		m_PauseMenu = new Menu();
 		m_PauseMenu->setTitleImage("Paused.png");
-		m_PauseMenu->addMenuItem(new MenuItem<Game>("Resume", this, &Game::menu_Resume) );
-		m_PauseMenu->addMenuItem(new MenuItem<Game>("Restart", this, &Game::menu_Restart) );
-		m_PauseMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
+		m_PauseMenu->addMenuItem(new FunctionMenuItem<Game>("Resume", this, &Game::menu_Resume) );
+		m_PauseMenu->addMenuItem(new FunctionMenuItem<Game>("Restart", this, &Game::menu_Restart) );
+		m_PauseMenu->addMenuItem(new FunctionMenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
 		m_PauseMenu->setCurrentItem("Resume");
 	}
 	m_PauseMenu->layoutMenuItems();
@@ -391,7 +391,7 @@ void Game::instructionsMenu()
 			item->string().SetFont(HudFont::Small);
 			m_InstructionsMenu->addMenuItem(item);
 		}
-		m_InstructionsMenu->addMenuItem(new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
+		m_InstructionsMenu->addMenuItem(new FunctionMenuItem<Game>("Main Menu", this, &Game::menu_MainMenu) );
 		m_InstructionsMenu->setCurrentItem("Main Menu");
 	}
 	m_InstructionsMenu->layoutMenuItems();
@@ -403,18 +403,23 @@ void Game::showGameOver()
 	pause();
 	if (0 == m_EndGameMenu)
 	{
-		if (m_HighScores.isHighScore(m_Timer->getTimeElapsedInMilliseconds() ) )
+		if (-1 == m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() ) )
 		{
-			//TODO: get the player's name
-			std::string playerName = "Player";
-			m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), playerName);
-			m_HighScores.save();
+
 		}
-		
+
 		loadHighScoreMenu();
 	}
 	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
 	m_EndGameMenu->layoutMenuItems();
+}
+
+void Game::menu_PlayerNameResult(const std::string& str)
+{
+	m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), str);
+	m_HighScores.save();
+	removeMenus();
+	loadHighScoreMenu();
 }
 
 void Game::menu_Play()
@@ -560,6 +565,7 @@ void Game::loadHighScoreMenu()
 	m_TimeString.SetFont(HudFont::Large);
 	m_EndGameMenu = new Menu();
 	m_EndGameMenu->setTitleImage("Title.png");
+
 	for (unsigned int i = 0; i < 10; ++i)
 	{
 		std::stringstream scoreText;
@@ -575,7 +581,7 @@ void Game::loadHighScoreMenu()
 
 	if (m_GameState == GameState::GameOver)
 	{
-		IMenuItem *playAgainItem = new MenuItem<Game>("Play Again", this, &Game::menu_Restart);
+		IMenuItem *playAgainItem = new FunctionMenuItem<Game>("Play Again", this, &Game::menu_Restart);
 		playAgainItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(playAgainItem);
 		m_EndGameMenu->setCurrentItem("Play Again");
@@ -583,12 +589,12 @@ void Game::loadHighScoreMenu()
 
 	if (m_GameState == GameState::HighScores)
 	{
-		IMenuItem *clearScoresItem = new MenuItem<Game>("Clear Scores", this, &Game::menu_ClearHighScores);
+		IMenuItem *clearScoresItem = new FunctionMenuItem<Game>("Clear Scores", this, &Game::menu_ClearHighScores);
 		clearScoresItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(clearScoresItem);
 	}
 
-	IMenuItem *mainMenuItem = new MenuItem<Game>("Main Menu", this, &Game::menu_MainMenu);
+	IMenuItem *mainMenuItem = new FunctionMenuItem<Game>("Main Menu", this, &Game::menu_MainMenu);
 	mainMenuItem->string().SetFont(HudFont::Small);
 	m_EndGameMenu->addMenuItem(mainMenuItem);
 }
