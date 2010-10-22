@@ -73,7 +73,7 @@ public:
 	InputMenuItem(const std::string& caption, const std::string& input, T* object, resultFunction function)
 		: m_Caption(caption), m_Text(input), m_Object(object), m_Function(function) { m_String.SetText(m_Caption + input); }
 	void select() { (m_Object->*m_Function)(m_Text); }
-	void HandleCharacter(char c)
+	bool HandleCharacter(char c)
 	{
 		switch (c)
 		{
@@ -86,6 +86,7 @@ public:
 			break;
 		};
 		m_String.SetText(m_Caption + m_Text);
+		return true;
 	}
 	
 private:
