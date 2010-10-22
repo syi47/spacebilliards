@@ -583,7 +583,7 @@ void Game::loadHighScoreMenu()
 		IMenuItem *scoreItem = 0;
 		if (i == newScore)
 		{
-			scoreItem = new InputMenuItem(scoreText.str(), "", this, &Game::menu_PlayerNameResult);
+			scoreItem = new InputMenuItem<Game>(scoreText.str(), "", this, &Game::menu_PlayerNameResult);
 		}
 		else
 		{
