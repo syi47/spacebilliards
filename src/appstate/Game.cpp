@@ -566,15 +566,29 @@ void Game::loadHighScoreMenu()
 	m_EndGameMenu = new Menu();
 	m_EndGameMenu->setTitleImage("Title.png");
 
-	for (unsigned int i = 0; i < 10; ++i)
+	int newScore = -1;
+	if (GameState::GameOver == m_GameState)
+	{
+		newScore = m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() );
+	}
+
+	for (int i = 0; i < 10; ++i)
 	{
 		std::stringstream scoreText;
 		scoreText << (i+1) << ". ";
 		if (i < m_HighScores.count() )
 		{
-			scoreText << GameTimer::timeAsString(m_HighScores[i].Time() ) << " - " << m_HighScores[i].Name();
+			scoreText << GameTimer::timeAsString(m_HighScores[i].Time() ) << " - ";
 		}
-		IMenuItem *scoreItem = new StaticMenuItem(scoreText.str() );
+		IMenuItem *scoreItem = 0;
+		if (i == newScore)
+		{
+			scoreItem = new InputMenuItem(scoreText.str(), "", this, &Game::menu_PlayerNameResult);
+		}
+		else
+		{
+			scoreItem = new StaticMenuItem(scoreText.str() + m_HighScores[i].Name() );
+		}
 		scoreItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(scoreItem);
 	}
