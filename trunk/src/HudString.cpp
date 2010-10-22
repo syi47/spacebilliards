@@ -66,6 +66,11 @@ void HudString::SetText(const std::string &str)
 void HudString::SetFont(HudFont::Enum hudFont)
 {
 	m_FontType = hudFont;
+	if (0 == m_TextControl)
+	{
+		SetText(m_Text);
+	}
+
 	switch (m_FontType)
 	{
 	case HudFont::Large:

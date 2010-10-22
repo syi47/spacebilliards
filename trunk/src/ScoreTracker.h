@@ -55,10 +55,13 @@ public:
 	**/
 	void addScore(int time, const std::string& name);
 
-	///Checks if a score would make the High Scores
-	/** @return true if the score is a top score, false otherwise
+	///Rates a score against the current high scores
+	/**
+	@param time The time to test against the current high scores
+	@return The high score that the time would displace, or -1 if not a high score
 	**/
-	bool isHighScore(int timeInMilliseconds);
+	int rateScore(int time);
+
 	///Gets the number of scores currently stored
 	/** @return The number of scores
 	**/
@@ -73,13 +76,20 @@ public:
 	///Gets the score at the given index, using square bracket operators
 	const Score& operator[](int index) const { return at(index); }
 
+	///Returns the index of the last score added
+	int lastScoreIndex() { return m_LastScoreIndex; }
+
 private:
 private:
 	///Sorts the scores lowest (best) to highest (worst)
 	void sortScores();
 
+	///Removes scores from memory, but does not delete scores from disk
+	void removeCachedScores();
+
 private:
 	std::string m_FileName;
 	std::vector<Score> m_Scores;
+	int m_LastScoreIndex;
 	typedef std::vector<Score>::iterator ScoreIterator;
 };

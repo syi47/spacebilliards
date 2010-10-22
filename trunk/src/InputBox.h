@@ -20,14 +20,15 @@
 class InputBox : public irr::IEventReceiver
 {
 public:
-	InputBox(const std::string& caption, const std::string& text, const std::string& input = "");
+	InputBox(const std::string& input = "");
 	~InputBox(void);
 
 	bool OnEvent(const irr::SEvent& event);
+	bool Result() { return m_Result; }
+	const std::string& Text() { return m_Text; }
 
 private:
-	irr::gui::IGUIWindow *m_Window;
-	irr::gui::IGUIElement *m_OKButton;
 	irr::gui::IGUIEditBox *m_InputBox;
-	std::wstring m_Text;
+	std::string m_Text;
+	bool m_Result;
 };

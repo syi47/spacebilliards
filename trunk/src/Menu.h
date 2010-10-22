@@ -21,40 +21,78 @@
 class IMenuItem
 {
 public:
-	virtual ~IMenuItem(){};
+	virtual ~IMenuItem(){}
 	virtual void select() = 0;	///< Selects the MenuItem and calls its function
 	virtual HudString& string() = 0;
+	virtual bool HandleCharacter(char c) = 0;
+};
+
+class MenuItem : public IMenuItem
+{
+public:
+	virtual ~MenuItem(){}
+	HudString& string() { return m_String; }
+	virtual void select() = 0;
+	virtual bool HandleCharacter(char) { return false; }
+
+protected:
+	HudString m_String;
 };
 
 ///The templated class that holds the meat of the MenuItem
 template <typename T>
-class MenuItem : public IMenuItem
+class FunctionMenuItem : public MenuItem
 {
 public:
 	typedef void (T::*selectFunction)(void);
-	MenuItem(const std::string& name, T* object, selectFunction function)
-		: m_String(name), m_Object(object), m_Function(function)
+	FunctionMenuItem(const std::string& name, T* object, selectFunction function)
+		: m_Object(object), m_Function(function)
 	{
 		m_String.SetFont(HudFont::Large);
+		m_String.SetText(name);
 	}
 	void select() { (m_Object->*m_Function)(); }
-	HudString& string() { return m_String; }
 
 private:
-	HudString m_String;
 	T* m_Object;
 	selectFunction m_Function;
 };
 
-class StaticMenuItem : public IMenuItem
+class StaticMenuItem : public MenuItem
 {
 public:
-	StaticMenuItem(const std::string& name) : m_String(name) {}
+	StaticMenuItem(const std::string& name) { m_String.SetText(name); }
 	void select() {}
-	HudString& string() { return m_String; }
+};
 
+template <typename T>
+class InputMenuItem : public MenuItem
+{
+public:
+	typedef void (T::*resultFunction)(const std::string&);
+	InputMenuItem(const std::string& caption, const std::string& input, T* object, resultFunction function)
+		: m_Caption(caption), m_Text(input), m_Object(object), m_Function(function) { m_String.SetText(m_Caption + input); }
+	void select() { (m_Object->*m_Function)(m_Text); }
+	void HandleCharacter(char c)
+	{
+		switch (c)
+		{
+		case ('\b'):
+			m_Text.erase(m_Text.length()-1);
+			break;
+
+		default:
+			m_Text += c;
+			break;
+		};
+		m_String.SetText(m_Caption + m_Text);
+	}
+	
 private:
-	HudString m_String;
+	std::string m_Text;
+	std::string m_Caption;
+	T* m_Object;
+	resultFunction m_Function;
 };
 
 class Menu : public irr::IEventReceiver

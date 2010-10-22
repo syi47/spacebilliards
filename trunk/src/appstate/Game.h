@@ -95,6 +95,7 @@ private:
 	void menu_Restart();
 	void menu_MainMenu();
 	void menu_ClearHighScores();
+	void menu_PlayerNameResult(const std::string& str);
 
 	void removeMenus();
 
