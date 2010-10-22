@@ -65,7 +65,7 @@ public:
 	///Gets the number of scores currently stored
 	/** @return The number of scores
 	**/
-	unsigned int count() const {return m_Scores.size(); }
+	int count() const {return m_Scores.size(); }
 	///Clears all the high scores
 	/** This will clear all the scores stored inside the file as well
 	**/
