@@ -39,4 +39,12 @@ public:
 		return strTo;
 	}
 
+	static char wideCharToChar(wchar_t w)
+	{
+		char c;
+		WideCharToMultiByte(CP_ACP, 0, &w, 1, &c, 1, NULL, NULL);
+		return c;
+	}
+
+
 };
