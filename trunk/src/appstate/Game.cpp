@@ -403,11 +403,6 @@ void Game::showGameOver()
 	pause();
 	if (0 == m_EndGameMenu)
 	{
-		if (-1 == m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() ) )
-		{
-
-		}
-
 		loadHighScoreMenu();
 	}
 	Irrlicht::getDevice()->setEventReceiver(m_EndGameMenu);
@@ -419,7 +414,6 @@ void Game::menu_PlayerNameResult(const std::string& str)
 	m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), str);
 	m_HighScores.save();
 	removeMenus();
-	loadHighScoreMenu();
 }
 
 void Game::menu_Play()
@@ -560,6 +554,20 @@ void Game::highScoresMenu()
 	m_EndGameMenu->layoutMenuItems();
 }
 
+//void Game::loadEndGameHighScores()
+//{
+//	m_EndGameMenu = new Menu();
+//	m_EndGameMenu->setTitleImage("Title.png");
+//	
+//	int newScoreIndex = m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() );
+//	for (int i = 0; i < 10; ++i)
+//	{
+//		std::stringstream scoreText;
+//		scoreText << (i+1) << ". ";
+//		int index = (i == newScoreIndex) ? i : i+1;
+//	}
+//}
+
 void Game::loadHighScoreMenu()
 {
 	m_TimeString.SetFont(HudFont::Large);
@@ -576,18 +584,24 @@ void Game::loadHighScoreMenu()
 	{
 		std::stringstream scoreText;
 		scoreText << (i+1) << ". ";
-		if (i < m_HighScores.count() )
+		if ( (-1 == newScore && i < m_HighScores.count() )
+			|| (i < m_HighScores.count()-1) )
 		{
-			scoreText << GameTimer::timeAsString(m_HighScores[i].Time() ) << " - ";
+			scoreText << GameTimer::timeAsString(m_HighScores[(i>newScore)?i:i+1].Time() ) << " - ";
+			if (i != newScore)
+			{
+				 scoreText << m_HighScores[(i>newScore)?i:i-1].Name();
+			}
 		}
 		IMenuItem *scoreItem = 0;
 		if (i == newScore)
 		{
+			scoreText << m_Timer->getTimeElapsedString() << " - Name:";
 			scoreItem = new InputMenuItem<Game>(scoreText.str(), "", this, &Game::menu_PlayerNameResult);
 		}
 		else
 		{
-			scoreItem = new StaticMenuItem(scoreText.str() + m_HighScores[i].Name() );
+			scoreItem = new StaticMenuItem(scoreText.str() );
 		}
 		scoreItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(scoreItem);
@@ -598,7 +612,6 @@ void Game::loadHighScoreMenu()
 		IMenuItem *playAgainItem = new FunctionMenuItem<Game>("Play Again", this, &Game::menu_Restart);
 		playAgainItem->string().SetFont(HudFont::Small);
 		m_EndGameMenu->addMenuItem(playAgainItem);
-		m_EndGameMenu->setCurrentItem("Play Again");
 	}
 
 	if (m_GameState == GameState::HighScores)
@@ -611,6 +624,18 @@ void Game::loadHighScoreMenu()
 	IMenuItem *mainMenuItem = new FunctionMenuItem<Game>("Main Menu", this, &Game::menu_MainMenu);
 	mainMenuItem->string().SetFont(HudFont::Small);
 	m_EndGameMenu->addMenuItem(mainMenuItem);
+	if (-1 == newScore)
+	{
+		m_EndGameMenu->setCurrentItem("Play Again");
+	}
+	else if (GameState::GameOver == m_GameState)
+	{
+		m_EndGameMenu->setCurrentItem(newScore);
+	}
+	else
+	{
+		m_EndGameMenu->setCurrentItem("Main Menu");
+	}
 }
 
 }//namespace appstate

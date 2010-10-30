@@ -116,6 +116,8 @@ public:
 
 	///Sets the current item to be the item with the given name, if it exists
 	void setCurrentItem(const std::string& name);
+	///Sets the current item to the given index, if it exists
+	void setCurrentItem(int index);
 
 	///Sets the file to be used for the title image
 	void setTitleImage(const std::string& fileName);

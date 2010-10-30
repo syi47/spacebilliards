@@ -14,7 +14,9 @@
 */
 
 #include "Menu.h"
+#include "StringConvert.h"
 #include <algorithm>
+
 
 using namespace irr::core;
 
@@ -75,7 +77,7 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 			break;
 		}
 
-		case irr::KEY_SPACE:
+		//case irr::KEY_SPACE:
 		case irr::KEY_RETURN:
 		{
 			(*currentMenuItem)->select();
@@ -83,10 +85,12 @@ bool Menu::OnEvent(const irr::SEvent& eventdata)
 		}
 
 		default:
+			if (m_CurrentMenuItem) { return m_CurrentMenuItem->HandleCharacter(
+				StringConvert::wideCharToChar(eventdata.KeyInput.Char) ); }
 			return false;	//unhandled
 		}
 		m_CurrentMenuItem = *currentMenuItem;
-		return true;	//totally handled the fuck out of that shit
+		return true;	//totally handled
 	}
 	return false;	//unhandled
 }
@@ -128,6 +132,19 @@ void Menu::setCurrentItem(const std::string &name)
 		{
 			m_CurrentMenuItem = *item;
 		}
+	}
+}
+
+void Menu::setCurrentItem(int index)
+{
+	if (index >= 0 && static_cast<unsigned int>(index) < m_MenuItems.size() )
+	{
+		MenuItemIterator item = m_MenuItems.begin();
+		for (int i = 0; i < index; ++i)
+		{
+			item++;
+		}
+		m_CurrentMenuItem = *item;
 	}
 }
 

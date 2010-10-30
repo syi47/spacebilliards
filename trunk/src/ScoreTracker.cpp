@@ -18,6 +18,8 @@
 #include <sstream>
 #include <algorithm>
 
+const static int MaxScores = 10;
+
 using namespace irr::io;
 
 ScoreTracker::ScoreTracker(const std::string& fileName)
@@ -119,11 +121,22 @@ void ScoreTracker::removeCachedScores()
 
 int ScoreTracker::rateScore(int time)
 {
+	if (m_Scores.size() == 0)
+	{
+		return 0;
+	}
 	if (time > m_Scores.back().Time() )
 	{
-		return -1;
+		if (m_Scores.size() < MaxScores)
+		{
+			return m_Scores.size();
+		}
+		else
+		{
+			return -1;
+		}
 	}
-	for (unsigned int i = 0; i < m_Scores.size(); ++i)
+	for (unsigned int i = 0; i < m_Scores.size(); ++i)	//could binary search, but no need over ten scores
 	{
 		if (m_Scores[i].Time() > time)
 		{
