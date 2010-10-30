@@ -584,19 +584,31 @@ void Game::loadHighScoreMenu()
 	{
 		std::stringstream scoreText;
 		scoreText << (i+1) << ". ";
-		if ( (-1 == newScore && i < m_HighScores.count() )
-			|| (i < m_HighScores.count()-1) )
+		if (-1 == newScore || i < newScore )
 		{
-			scoreText << GameTimer::timeAsString(m_HighScores[(i>newScore)?i:i+1].Time() ) << " - ";
-			if (i != newScore)
+			//use the normal index
+			if (i < m_HighScores.count() )
 			{
-				 scoreText << m_HighScores[(i>newScore)?i:i-1].Name();
+				scoreText << GameTimer::timeAsString(m_HighScores[i].Time() ) << " - " << m_HighScores[i].Name();
 			}
 		}
+		else if (i == newScore)
+		{
+			//use the new score
+			scoreText << m_Timer->getTimeElapsedString() << " - Name: ";
+		}
+		else if (-1 != newScore && i > newScore )
+		{
+			//use the new score bumped down one
+			if (i < m_HighScores.count() + 1 && i > 0)
+			{
+				scoreText << GameTimer::timeAsString(m_HighScores[i-1].Time() ) << " - " << m_HighScores[i-1].Name();
+			}
+		}
+		else {}
 		IMenuItem *scoreItem = 0;
 		if (i == newScore)
 		{
-			scoreText << m_Timer->getTimeElapsedString() << " - Name:";
 			scoreItem = new InputMenuItem<Game>(scoreText.str(), "", this, &Game::menu_PlayerNameResult);
 		}
 		else
