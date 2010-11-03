@@ -238,6 +238,8 @@ void Game::loadScene()
 
 	m_TimeString.SetFont(HudFont::Small);
 
+	m_ScoreHasBeenAdded = false;
+
 }
 
 void Game::releaseScene()
@@ -413,6 +415,7 @@ void Game::menu_PlayerNameResult(const std::string& str)
 {
 	m_HighScores.addScore(m_Timer->getTimeElapsedInMilliseconds(), str);
 	m_HighScores.save();
+	m_ScoreHasBeenAdded = true;
 	removeMenus();
 }
 
@@ -430,12 +433,20 @@ void Game::menu_Resume()
 
 void Game::menu_Restart()
 {
+	if (GameState::GameOver == m_GameState && !m_ScoreHasBeenAdded)
+	{
+		menu_PlayerNameResult("Player");
+	}
 	restart();
 	removeMenus();
 }
 
 void Game::menu_MainMenu()
 {
+	if (GameState::GameOver == m_GameState && !m_ScoreHasBeenAdded)
+	{
+		menu_PlayerNameResult("Player");
+	}
 	restart();
 	removeMenus();
 	m_GameState = GameState::MainMenu;
@@ -554,20 +565,6 @@ void Game::highScoresMenu()
 	m_EndGameMenu->layoutMenuItems();
 }
 
-//void Game::loadEndGameHighScores()
-//{
-//	m_EndGameMenu = new Menu();
-//	m_EndGameMenu->setTitleImage("Title.png");
-//	
-//	int newScoreIndex = m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() );
-//	for (int i = 0; i < 10; ++i)
-//	{
-//		std::stringstream scoreText;
-//		scoreText << (i+1) << ". ";
-//		int index = (i == newScoreIndex) ? i : i+1;
-//	}
-//}
-
 void Game::loadHighScoreMenu()
 {
 	m_TimeString.SetFont(HudFont::Large);
@@ -575,7 +572,7 @@ void Game::loadHighScoreMenu()
 	m_EndGameMenu->setTitleImage("Title.png");
 
 	int newScore = -1;
-	if (GameState::GameOver == m_GameState)
+	if (GameState::GameOver == m_GameState && !m_ScoreHasBeenAdded)
 	{
 		newScore = m_HighScores.rateScore(m_Timer->getTimeElapsedInMilliseconds() );
 	}

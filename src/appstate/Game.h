@@ -129,6 +129,8 @@ private:
 	//Displays the time
 	HudString m_TimeString;
 
+	bool m_ScoreHasBeenAdded; ///<True if score has been added to the High Scores already
+
 	ScoreTracker m_HighScores;
 };
 
